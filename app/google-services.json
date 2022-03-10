@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "861675442315",
+    "project_id": "pokemonnft",
+    "storage_bucket": "pokemonnft.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861675442315:android:d4e3c8cc34e53bda51048e",
+        "android_client_info": {
+          "package_name": "com.tahirikosan.pokemonnft"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "861675442315-q8qhvc6vgogbts7vvjcnuvialdsmit8a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMTJ1fEj67LlDbBXm754tTW8Vs2THmH24"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "861675442315-q8qhvc6vgogbts7vvjcnuvialdsmit8a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
