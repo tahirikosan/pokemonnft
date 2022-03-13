@@ -4,14 +4,18 @@ import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.data.remote.api.NftApi
 import com.tahirikosan.pokemonnft.data.response.mint.MintPokemonResponse
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.GetOwnerPokemonsResponse
-import com.tahirikosan.pokemonnft.data.response.wallet.CreateWalletResponse
+import com.tahirikosan.pokemonnft.data.response.wallet.WalletResponse
 import javax.inject.Inject
 
 class NtfRepository @Inject constructor(
     private val api: NftApi
 ): BaseRepository(){
 
-    suspend fun createWallet(): Resource<CreateWalletResponse> = safeApiCall {
+    suspend fun connectWallet(mnemonic: String): Resource<WalletResponse> = safeApiCall {
+        api.connectWallet(mnemonic)
+    }
+
+    suspend fun createWallet(): Resource<WalletResponse> = safeApiCall {
         api.createWallet()
     }
 

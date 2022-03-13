@@ -6,6 +6,23 @@
 
     <fragment
         android:id="@+id/authFragment"
-        android:name="com.tahirikosan.pokemonnft.ui.AuthFragment"
-        android:label="AuthFragment" />
+        android:name="com.tahirikosan.pokemonnft.ui.auth.AuthFragment"
+        android:label="AuthFragment" >
+        <action
+            android:id="@+id/action_authFragment_to_walletConnectionFragment"
+            app:destination="@id/walletConnectionFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/walletConnectionFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.wallet.WalletConnectionFragment"
+        android:label="WalletConnectionFragment" >
+        <action
+            android:id="@+id/action_walletConnectionFragment_to_gameMenuFragment"
+            app:destination="@id/gameMenuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/gameMenuFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.menu.GameMenuFragment"
+        android:label="GameMenuFragment" />
 </navigation>

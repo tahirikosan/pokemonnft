@@ -2,6 +2,7 @@ package com.tahirikosan.pokemonnft.utils
 
 import android.content.Context
 import android.view.View
+import android.widget.EditText
 import android.widget.Toast
 
 object Utils {
@@ -23,5 +24,7 @@ object Utils {
     fun View.visible(isVisible: Boolean) {
         visibility = if (isVisible) View.VISIBLE else View.GONE
     }
+
+    fun EditText.trimmedText() = this.text.trim().toString()
 
 }

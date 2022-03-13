@@ -1,4 +1,4 @@
-package com.tahirikosan.pokemonnft.ui
+package com.tahirikosan.pokemonnft.ui.menu
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -8,20 +8,14 @@ import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.data.repository.NtfRepository
 import com.tahirikosan.pokemonnft.data.response.mint.MintPokemonResponse
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.GetOwnerPokemonsResponse
-import com.tahirikosan.pokemonnft.data.response.wallet.CreateWalletResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.security.PrivateKey
 import javax.inject.Inject
 
 @HiltViewModel
-class AuthViewModel @Inject constructor(
+class GameMenuViewModel @Inject constructor(
     private val repository: NtfRepository
-) : ViewModel() {
-
-    // Stores new wallet information.
-    private var _walletResponse = MutableLiveData<Resource<CreateWalletResponse>>()
-    val walletResponse: LiveData<Resource<CreateWalletResponse>> get() = _walletResponse
+): ViewModel() {
 
     private var _ownerPokemonsResponse = MutableLiveData<Resource<GetOwnerPokemonsResponse>>()
     val ownerPokemonsResponse: LiveData<Resource<GetOwnerPokemonsResponse>> get() = _ownerPokemonsResponse
@@ -29,11 +23,6 @@ class AuthViewModel @Inject constructor(
     private var _mintPokemonResponse = MutableLiveData<Resource<MintPokemonResponse>>()
     val mintPokemonResponse: LiveData<Resource<MintPokemonResponse>> get() = _mintPokemonResponse
 
-    // Creates a new wallet for user.
-    fun createWallet() = viewModelScope.launch {
-        _walletResponse.value = Resource.Loading
-        _walletResponse.value = repository.createWallet()
-    }
 
     fun getOwnerPokemons(publicKey: String) = viewModelScope.launch {
         _ownerPokemonsResponse.value = Resource.Loading
