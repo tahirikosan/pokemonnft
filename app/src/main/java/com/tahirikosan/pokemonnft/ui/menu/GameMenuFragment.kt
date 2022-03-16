@@ -7,6 +7,7 @@ import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.databinding.FragmentGameMenuBinding
+import com.tahirikosan.pokemonnft.ui.adapter.pokemon.PokemonAdapter
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
@@ -24,14 +25,17 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     override fun onStart() {
         super.onStart()
-        viewModel.getOwnerPokemons("0xe23039537a44e0C338e3B087F93f31089A36900a")
+        viewModel.getOwnerPokemons("0xd5207C1da3B83789F7B0b43A9154ca556FB642DA")
     }
 
     private fun handleClicks() {
         with(binding) {
-
             btnGoToMinting.setOnClickListener {
-              findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
+                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
+            }
+
+            btnFight.setOnClickListener {
+                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment())
             }
         }
     }
@@ -45,6 +49,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
                 is Resource.Success -> {
                     Timber.d("Pokemons: " + it.value.toString())
+                    binding.recyclerViewCards.adapter = PokemonAdapter(it.value.pokemons)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -53,7 +58,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
         })
     }
 
-    private fun routeToMintingPage(){
+    private fun routeToMintingPage() {
 
     }
 }

@@ -37,6 +37,9 @@
         <action
             android:id="@+id/action_gameMenuFragment_to_mintingFragment"
             app:destination="@id/mintingFragment" />
+        <action
+            android:id="@+id/action_gameMenuFragment_to_queueFragment"
+            app:destination="@id/queueFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -61,4 +64,16 @@
         android:id="@+id/mintingFragment"
         android:name="com.tahirikosan.pokemonnft.ui.mint.MintingFragment"
         android:label="MintingFragment" />
+    <fragment
+        android:id="@+id/fightFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.fight.FightFragment"
+        android:label="FightFragment" />
+    <fragment
+        android:id="@+id/queueFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.fight.QueueFragment"
+        android:label="QueueFragment" >
+        <action
+            android:id="@+id/action_queueFragment_to_fightFragment"
+            app:destination="@id/fightFragment" />
+    </fragment>
 </navigation>
