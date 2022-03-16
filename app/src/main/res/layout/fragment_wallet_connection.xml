@@ -13,9 +13,11 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+
         <EditText
             android:id="@+id/et_mnemonic"
             android:layout_width="match_parent"
+            android:hint="mnemonic"
             android:layout_height="wrap_content"/>
 
         <Button

@@ -9,8 +9,17 @@
         android:name="com.tahirikosan.pokemonnft.ui.auth.AuthFragment"
         android:label="AuthFragment" >
         <action
+            android:id="@+id/action_authFragment_to_registerFragment"
+            app:destination="@id/registerFragment" />
+        <action
+            android:id="@+id/action_authFragment_to_resetPasswordFragment"
+            app:destination="@id/resetPasswordFragment" />
+        <action
             android:id="@+id/action_authFragment_to_walletConnectionFragment"
             app:destination="@id/walletConnectionFragment" />
+        <action
+            android:id="@+id/action_authFragment_to_gameMenuFragment"
+            app:destination="@id/gameMenuFragment" />
     </fragment>
 
     <fragment
@@ -24,5 +33,32 @@
     <fragment
         android:id="@+id/gameMenuFragment"
         android:name="com.tahirikosan.pokemonnft.ui.menu.GameMenuFragment"
-        android:label="GameMenuFragment" />
+        android:label="GameMenuFragment" >
+        <action
+            android:id="@+id/action_gameMenuFragment_to_mintingFragment"
+            app:destination="@id/mintingFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registerFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.auth.RegisterFragment"
+        android:label="RegisterFragment" >
+        <action
+            android:id="@+id/action_registerFragment_to_authFragment"
+            app:destination="@id/authFragment" />
+        <action
+            android:id="@+id/action_registerFragment_to_walletConnectionFragment"
+            app:destination="@id/walletConnectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resetPasswordFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.auth.ResetPasswordFragment"
+        android:label="ResetPasswordFragment" >
+        <action
+            android:id="@+id/action_resetPasswordFragment_to_authFragment"
+            app:destination="@id/authFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/mintingFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.mint.MintingFragment"
+        android:label="MintingFragment" />
 </navigation>

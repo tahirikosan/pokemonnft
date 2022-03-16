@@ -7,7 +7,7 @@ import com.tahirikosan.pokemonnft.data.response.ownerpokemons.GetOwnerPokemonsRe
 import com.tahirikosan.pokemonnft.data.response.wallet.WalletResponse
 import javax.inject.Inject
 
-class NtfRepository @Inject constructor(
+class NFTRepository @Inject constructor(
     private val api: NftApi
 ): BaseRepository(){
 

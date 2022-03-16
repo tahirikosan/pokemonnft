@@ -3,6 +3,7 @@ package com.tahirikosan.pokemonnft.ui.menu
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.databinding.FragmentGameMenuBinding
@@ -30,7 +31,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
         with(binding) {
 
             btnGoToMinting.setOnClickListener {
-               // viewModel.mintPokemon("1413ba0cf742eb529a8c216ac8241f8a9fe5494f98f80af7d3ea1748bdde8a9f")
+              findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
             }
         }
     }
@@ -50,21 +51,6 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
             }
         })
-        // observe minting
-        /*viewModel.mintPokemonResponse.observe(this, {
-            binding.viewLoading.visible(it is Resource.Loading)
-            when (it) {
-                is Resource.Loading -> {
-                }
-                is Resource.Success -> {
-                    Timber.d(it.value.toString())
-                }
-                is Resource.Failure -> {
-                    Utils.showToastShort(requireContext(), it.errorBody.toString())
-                }
-            }
-            binding.btnMintPokemon.enable(true)
-        })*/
     }
 
     private fun routeToMintingPage(){

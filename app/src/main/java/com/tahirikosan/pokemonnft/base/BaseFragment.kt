@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import com.tahirikosan.pokemonnft.data.local.UserPreferences
 import java.lang.IllegalArgumentException
 import javax.inject.Inject
 
@@ -13,8 +14,8 @@ abstract class BaseFragment<VB : ViewBinding>(
     private val bindingInflater: (inflater: LayoutInflater) -> VB
 ) : Fragment() {
 
-    //@Inject
-    //lateinit var userPreferences: UserPreferences
+    @Inject
+    lateinit var userPreferences: UserPreferences
 
     private var _binding: VB? = null
 
