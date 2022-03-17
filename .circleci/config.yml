@@ -15,6 +15,9 @@ jobs:
       - android/restore-gradle-cache
       - android/restore-build-cache
       - run:
+          name: chmod permissions
+          command: chmod +x ./gradlew
+      - run:
           name: Run build
           command: |
             ./gradlew assemble
