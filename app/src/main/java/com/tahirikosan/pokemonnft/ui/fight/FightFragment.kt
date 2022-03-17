@@ -22,10 +22,6 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         super.onViewCreated(view, savedInstanceState)
 
 
-
-        binding.attackBtn.setOnClickListener {
-// add a new commento
-        }
     }
 
 
