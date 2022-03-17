@@ -5,11 +5,6 @@ orbs:
 
 jobs:
   build:
-    docker:
-      - image: alvrme/alpine-android:android-30
-
-    working_directory: ~/repo
-
     environment:
       JVM_OPTS: -Xmx3200m
     executor:
