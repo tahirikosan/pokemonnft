@@ -5,6 +5,13 @@ orbs:
 
 jobs:
   build:
+    docker:
+      - image: alvrme/alpine-android:android-30
+
+    working_directory: ~/repo
+
+    environment:
+      JVM_OPTS: -Xmx3200m
     executor:
       name: android/android-machine
       resource-class: large
@@ -18,6 +25,48 @@ jobs:
             ./gradlew assemble
       - android/save-gradle-cache
       - android/save-build-cache
+      - run:
+          name: Store Google Services Key
+          command: echo $GOOGLE_SERVICES_KEY | base64 -d > app/google-services.json
+
+      - run:
+          name: Store Google Services Account
+          command: echo $GOOGLE_SERVICES_ACCOUNT | base64 -d > google-services-account.json
+
+      - restore_cache:
+          key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
+
+      - run:
+          name: Download Dependencies
+          command: ./gradlew androidDependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
+
+      - run:
+          name: Run Tests
+          command: ./gradlew lintDebug testDebug
+
+      - store_artifacts:
+          path: app/build/reports
+          destination: reports
+
+      - store_test_results:
+          path: app/build/test-results
+
+      - run:
+          name: Build debug APK
+          command: ./gradlew :app:assembleDebug
+
+      - store_artifacts:
+          path: app/build/outputs/apk/
+          destination: apk
+
+      - run:
+          name: Publish APK to Firebase Distribution
+          command: ./gradlew assembleDebug appDistributionUploadDebug
 
 
   unit_test:
