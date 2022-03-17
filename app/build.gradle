@@ -6,6 +6,7 @@ plugins {
     id 'com.google.gms.google-services'
     id "androidx.navigation.safeargs"
     id "kotlin-parcelize"
+    id("com.google.firebase.appdistribution")
 }
 
 android {
@@ -22,6 +23,13 @@ android {
     }
 
     buildTypes {
+        getByName("debug") {
+            firebaseAppDistribution {
+                serviceCredentialsFile="./google-services-account.json"
+                releaseNotes="First publish"
+                groups="internal-tester"
+            }
+        }
         release {
             debuggable false
             buildConfigField "Boolean", "DEBUG_MODE", "false"
