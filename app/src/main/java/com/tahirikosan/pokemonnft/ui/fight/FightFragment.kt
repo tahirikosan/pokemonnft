@@ -24,7 +24,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
 
         binding.attackBtn.setOnClickListener {
-
+// add a new commento
         }
     }
 
