@@ -63,7 +63,6 @@ android {
         }
         create("dev") {
             dimension = "default"
-            versionNameSuffix = "-dev"
 
             buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:5000\"")
             buildConfigField("String", "CLIENT_API_KEY", "\"JtE0it5_7ojQGmhU9h5ollQcEMCUrbZcn_KfBoF21nuahg\"")
