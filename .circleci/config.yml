@@ -31,8 +31,8 @@ jobs:
           name: Store Google Services Account
           command: echo $GOOGLE_SERVICES_ACCOUNT | base64 -d > google-services-account.json
 
-      - restore_cache:
-          key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
+     #- restore_cache:
+     #    key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
 
       - run:
           name: Download Dependencies
