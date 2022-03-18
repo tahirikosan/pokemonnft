@@ -20,6 +20,9 @@ import kotlin.random.Random
 class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::inflate) {
 
 
+    private val SPEED_INDEX = 3
+    private val ATTACK_INDEX = 1
+    private val HEALTH_INDEX = 0
     private lateinit var firestore: FirebaseFirestore
     private lateinit var roomsRef: CollectionReference
     private lateinit var usersRef: CollectionReference
@@ -78,10 +81,19 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
+    private fun setPlayerHp() {
+        roomsRef.document(roomId)
+            .update(
+                mapOf(
+                    "health.${userId}" to selectedPokemon.attributes!![0].value
+                )
+            )
+    }
+
     private fun attack() {
         // Hit enemy and decrease it's health point.
-        val speed = selectedPokemon.attributes!![3].value!!
-        val attack = selectedPokemon.attributes!![2].value!!
+        val speed = selectedPokemon.attributes!![SPEED_INDEX].value!!
+        val attack = selectedPokemon.attributes!![ATTACK_INDEX].value!!
         val randomValue = (1..speed).random()
         //val damage = (attack + (attack * randomValue) / 100).toDouble()
         val damage = (10 + (10 * randomValue) / 100).toDouble()
@@ -120,16 +132,6 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             }
     }
 
-    private fun routeToGameResults(isWon: Boolean) {
-        // Remove snapshot listener.
-        roomListener.remove()
-        findNavController().navigate(
-            FightFragmentDirections.actionFightFragmentToFightResultFragment(
-                isWon
-            )
-        )
-    }
-
     // Listen room field changes like round, turn, health etc.
     private fun listenChanges() {
         roomListener = roomsRef.document(roomId).addSnapshotListener { snapshot, e ->
@@ -164,14 +166,6 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
-    private fun setPlayerHp() {
-        roomsRef.document(roomId)
-            .update(
-                mapOf(
-                    "health.${userId}" to selectedPokemon.attributes!![0].value
-                )
-            )
-    }
 
     private fun youWon() {
         usersRef.document(userId)
@@ -209,5 +203,15 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     private fun deleteRoom() {
         roomsRef.document(roomId).delete()
+    }
+
+    private fun routeToGameResults(isWon: Boolean) {
+        // Remove snapshot listener.
+        roomListener.remove()
+        findNavController().navigate(
+            FightFragmentDirections.actionFightFragmentToFightResultFragment(
+                isWon
+            )
+        )
     }
 }
