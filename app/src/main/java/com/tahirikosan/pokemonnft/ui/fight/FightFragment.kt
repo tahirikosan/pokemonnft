@@ -25,6 +25,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     private lateinit var usersRef: CollectionReference
     private val args: FightFragmentArgs by navArgs()
 
+    private var isGameOver: Boolean = false
+
     private val userId by lazy {
         args.userId
     }
@@ -53,7 +55,9 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     override fun onStop() {
         super.onStop()
-        youLeftTheRoom()
+        if (!isGameOver) {
+            youLeftTheRoom()
+        }
     }
 
     private fun checkIfRoomExistThenDeleteIt() {
@@ -86,6 +90,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
                 if (room!!.players!!.size == 1) {
                     // That means other user left the game. So you won
+                    isGameOver = true
                     deleteRoom()
                     youWon()
                 }
