@@ -9,6 +9,13 @@ import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.databinding.FragmentFightBinding
 import com.tahirikosan.pokemonnft.data.response.fight.Room
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_USERS
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_coin
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_health
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_pvp
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_turn
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
@@ -48,8 +55,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         firestore = FirebaseFirestore.getInstance()
-        roomsRef = firestore.collection("rooms")
-        usersRef = firestore.collection("users")
+        roomsRef = firestore.collection(COLLECTION_ROOMS)
+        usersRef = firestore.collection(COLLECTION_USERS)
         setPlayerHp()
         listenChanges()
         Utils.showToastShort(requireContext(), selectedPokemon.name.toString() + "  " + roomId)
@@ -85,7 +92,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         roomsRef.document(roomId)
             .update(
                 mapOf(
-                    "health.${userId}" to selectedPokemon.attributes!![0].value
+                    "$field_health.${userId}" to selectedPokemon.attributes!![0].value
                 )
             )
     }
@@ -108,7 +115,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             }
             // Then update the enemyHp.
             roomsRef.document(roomId)
-                .update("health.${enemyId}", enemyHp).addOnSuccessListener {
+                .update("$field_health.${enemyId}", enemyHp).addOnSuccessListener {
                     if (enemyHp == 0) {
                         isGameOver = true
                         youWon()
@@ -124,7 +131,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     private fun changeTurn() {
         // Change turn
         roomsRef.document(roomId)
-            .update("turn", enemyId)
+            .update(field_turn, enemyId)
             .addOnSuccessListener {
                 binding.attackBtn.enable(false)
             }
@@ -170,7 +177,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     private fun youWon() {
         usersRef.document(userId)
             .update(
-                "coin", FieldValue.increment(50), "pvp", FieldValue.increment(10)
+                field_coin, FieldValue.increment(50), field_pvp, FieldValue.increment(10)
             ).addOnSuccessListener {
                 deleteRoom()
                 routeToGameResults(isWon = true)
@@ -183,7 +190,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     private fun youLose() {
         usersRef.document(userId)
             .update(
-                "pvp", FieldValue.increment(-10)
+                field_pvp, FieldValue.increment(-10)
             ).addOnSuccessListener {
                 deleteRoom()
                 routeToGameResults(isWon = false)
@@ -194,10 +201,10 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     private fun youLeftTheRoom() {
         Log.d("LEFT ROOM:", userId)
         roomsRef.document(roomId)
-            .update("players", FieldValue.arrayRemove(userId))
+            .update(field_players, FieldValue.arrayRemove(userId))
         usersRef.document(userId)
             .update(
-                "pvp", FieldValue.increment(-50)
+                field_pvp, FieldValue.increment(-50)
             )
     }
 

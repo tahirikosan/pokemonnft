@@ -14,6 +14,11 @@ import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.response.fight.Room
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon
 import com.tahirikosan.pokemonnft.databinding.FragmentQueueBinding
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_QUEUE
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.QUEUE_DOC_IC
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 
@@ -41,8 +46,8 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
         // Write a message to the database
         // Write a message to the database
-        queueRef = firestore.collection("queue")
-        roomsRef = firestore.collection("rooms")
+        queueRef = firestore.collection(COLLECTION_QUEUE)
+        roomsRef = firestore.collection(COLLECTION_ROOMS)
         addUserToQueue(userId = myUserId)
 
         listenChanges()
@@ -58,13 +63,13 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
     }
 
     private fun addUserToQueue(userId: String) {
-        queueRef.document("iji04WUR6e6Wq5ulOBFl")
-            .update("players", FieldValue.arrayUnion(userId))
+        queueRef.document(QUEUE_DOC_IC)
+            .update(field_players, FieldValue.arrayUnion(userId))
     }
 
     private fun removeUserFromQueue(userId: String) {
-        queueRef.document("iji04WUR6e6Wq5ulOBFl")
-            .update("players", FieldValue.arrayRemove(userId))
+        queueRef.document(QUEUE_DOC_IC)
+            .update(field_players, FieldValue.arrayRemove(userId))
             .addOnSuccessListener {
                 //binding.joinButton.visible(true)
             }
@@ -89,31 +94,8 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
 
     private fun listenChanges() {
-        // Listen for queue changes.
-        /* queueRef.document("iji04WUR6e6Wq5ulOBFl").addSnapshotListener { snapshot, e ->
-             if (e != null) {
-                 Log.w("TAG", "Listen failed.", e)
-                 return@addSnapshotListener
-             }
-
-             if (snapshot != null && snapshot.exists()) {
-                 Log.d("TAG", "Current data: ${snapshot.data}")
-
-                 // Check if queue is includes two userId.
-                 setplayers(snapshot.data!!["players"] as ArrayList<String>)
-                 if (players.size >= 2) {
-                     Utils.showToastShort(requireContext(), "There are two user.")
-                     // Then remove these players from queue and send them to match screen.
-                     removeUserFromQueue(userId = myUserId)
-                     binding.viewLoading.visible(false)
-                 }
-             } else {
-                 Log.d("TAG", "Current data: null")
-             }
-         }*/
-
         // Listen game room and join it.
-        roomListener = roomsRef.whereArrayContains("players", myUserId)
+        roomListener = roomsRef.whereArrayContains(FirebaseUtils.field_players, myUserId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TAG", "Listen failed.", e)
