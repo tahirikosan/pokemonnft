@@ -8,10 +8,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.DocumentChange
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.R
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.response.fight.Room
@@ -27,6 +24,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
     private lateinit var roomsRef: CollectionReference
     private lateinit var myUserId: String
     private var players: ArrayList<String> = arrayListOf()
+    private lateinit var roomListener: ListenerRegistration
 
     // Fragment arguments.
     private val args: QueueFragmentArgs by navArgs()
@@ -74,12 +72,19 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
     }
 
     private fun routeUserToFightPage(roomId: String) {
+        // Stop listen to room changes.
+        roomListener.remove()
+        val enemyId = players.first {
+            it != myUserId
+        }
         val bundle: Bundle = bundleOf(
             "roomId" to roomId,
             "selectedPokemon" to selectedPokemon,
-            "userId" to myUserId
+            "userId" to myUserId,
+            "enemyId" to enemyId
         )
         findNavController().navigate(R.id.action_queueFragment_to_fightFragment, bundle)
+
     }
 
 
@@ -108,18 +113,19 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
          }*/
 
         // Listen game room and join it.
-        roomsRef.whereArrayContains("players", myUserId)
+        roomListener = roomsRef.whereArrayContains("players", myUserId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TAG", "Listen failed.", e)
                     return@addSnapshotListener
                 }
 
-                if(snapshots!!.documentChanges.isNullOrEmpty().not()){
+                if (snapshots!!.documentChanges.isNullOrEmpty().not()) {
                     val dc = snapshots.documentChanges[0]
                     when (dc.type) {
                         DocumentChange.Type.ADDED -> {
                             val room = dc.document.toObject(Room::class.java)
+                            setPlayers(room.players!!)
                             routeUserToFightPage(roomId = room.roomId!!)
                         }
                         // DocumentChange.Type.MODIFIED -> Log.d(TAG, "Modified city: ${dc.document.data}")
@@ -135,7 +141,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
     }
 
-    private fun setplayers(newplayers: ArrayList<String>) {
+    private fun setPlayers(newplayers: ArrayList<String>) {
         if (players.size < 2) {
             players.clear()
             players.addAll(newplayers)

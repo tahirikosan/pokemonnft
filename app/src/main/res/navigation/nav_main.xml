@@ -72,6 +72,9 @@
             android:name="userId"
             app:argType="string" />
         <argument
+            android:name="enemyId"
+            app:argType="string" />
+        <argument
             android:name="roomId"
             app:argType="string" />
         <argument
@@ -80,6 +83,9 @@
         <action
             android:id="@+id/action_fightFragment_to_fightResultFragment"
             app:destination="@id/fightResultFragment" />
+        <action
+            android:id="@+id/action_fightFragment_to_gameMenuFragment"
+            app:destination="@id/gameMenuFragment" />
     </fragment>
     <fragment
         android:id="@+id/queueFragment"
@@ -96,6 +102,9 @@
         android:id="@+id/fightResultFragment"
         android:name="com.tahirikosan.pokemonnft.ui.fight.FightResultFragment"
         android:label="FightResultFragment" >
+
+        <argument android:name="isWon"
+            app:argType="boolean"/>
         <action
             android:id="@+id/action_fightResultFragment_to_gameMenuFragment"
             app:destination="@id/gameMenuFragment" />
