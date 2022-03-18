@@ -2,23 +2,17 @@ package com.tahirikosan.pokemonnft.ui.fight
 
 import android.os.Bundle
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
-import android.widget.Toast
-import androidx.activity.addCallback
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.firebase.auth.FirebaseAuth
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.databinding.FragmentFightBinding
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.tahirikosan.pokemonnft.data.response.fight.Room
-import com.tahirikosan.pokemonnft.utils.KeyDownListener
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
-import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -90,7 +84,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                 Log.d("TAG", "Current data: ${snapshot.data}")
                 val room = snapshot.toObject(Room::class.java)
 
-                if (room!!.users!!.size == 1) {
+                if (room!!.players!!.size == 1) {
                     // That means other user left the game. So you won
                     deleteRoom()
                     youWon()
@@ -122,8 +116,9 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     // User closed game when game was continue. So punish him!
     private fun youLeftTheRoom() {
+        Log.d("LEFT ROOM:", userId)
         roomsRef.document(roomId)
-            .update("users", FieldValue.arrayRemove(userId))
+            .update("players", FieldValue.arrayRemove(userId))
         usersRef.document(userId)
             .update(
                 "pvp", FieldValue.increment(-50)

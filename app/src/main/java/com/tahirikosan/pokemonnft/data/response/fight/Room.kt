@@ -8,5 +8,7 @@ data class Room(
     var roomId: String? = null,
     var round: Int? = null,
     var turn: String? = null,
-    var users: ArrayList<String>? = null,
+    var playerOne: String?=null,
+    var playerTwo: String?=null,
+    var players: ArrayList<String>? = null,
 ) : Parcelable
