@@ -4,6 +4,9 @@ import android.content.Context
 import android.view.View
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.addCallback
+import androidx.fragment.app.Fragment
+import com.tahirikosan.pokemonnft.MainActivity
 
 object Utils {
     fun showToastShort(context: Context, message: String){
@@ -27,4 +30,9 @@ object Utils {
 
     fun EditText.trimmedText() = this.text.trim().toString()
 
+    fun Fragment.onBackPressed(onBackPressed: ()->Unit){
+        this.requireActivity().onBackPressedDispatcher.addCallback(this) {
+            onBackPressed.invoke()
+        }
+    }
 }

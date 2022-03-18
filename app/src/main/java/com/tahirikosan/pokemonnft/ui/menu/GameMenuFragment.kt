@@ -6,6 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
+import com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon
 import com.tahirikosan.pokemonnft.databinding.FragmentGameMenuBinding
 import com.tahirikosan.pokemonnft.ui.adapter.pokemon.PokemonAdapter
 import com.tahirikosan.pokemonnft.utils.Utils
@@ -16,6 +17,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuBinding::inflate) {
 
+    private lateinit var pokemons: List<Pokemon>
     private val viewModel: GameMenuViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,7 +37,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
             }
 
             btnFight.setOnClickListener {
-                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment())
+                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment(pokemons[0]))
             }
         }
     }
@@ -49,7 +51,9 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
                 is Resource.Success -> {
                     Timber.d("Pokemons: " + it.value.toString())
-                    binding.recyclerViewCards.adapter = PokemonAdapter(it.value.pokemons)
+                    pokemons = it.value.pokemons
+                    binding.recyclerViewCards.adapter = PokemonAdapter(pokemons)
+                    binding.btnFight.visible(true)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())

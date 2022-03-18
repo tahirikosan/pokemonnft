@@ -29,7 +29,23 @@ class FirestoreDatabaseImpl @Inject constructor(
             e.printStackTrace()
             throw  e
         }
+    }
 
-
+    override suspend fun addUserToFirestore(userId: String): Boolean {
+        val user = hashMapOf(
+            "userId" to userId,
+            "coin" to 0,
+            "pvp" to 0,
+        )
+        return try {
+            firestore
+                .collection("users")
+                .document(userId)
+                .set(user)
+                .await()
+            true
+        } catch (e: Exception) {
+            throw e
+        }
     }
 }

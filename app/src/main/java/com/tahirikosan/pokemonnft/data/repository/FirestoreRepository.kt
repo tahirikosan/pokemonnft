@@ -12,4 +12,8 @@ class FirestoreRepository @Inject constructor(
     suspend fun getPokemonByHash(hash: String): Resource<Pokemon> = safeApiCall {
         firestoreDatabase.getPokemonByHash(hash)
     }
+
+    suspend fun addUserToFirestore(userId: String): Resource<Boolean> = safeApiCall {
+        firestoreDatabase.addUserToFirestore(userId)
+    }
 }

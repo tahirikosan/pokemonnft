@@ -44,6 +44,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private fun registerObservers() {
         viewModel.currentUser.observe(viewLifecycleOwner, { user ->
             user?.let {
+                viewModel.addUserToFirestore(userId = user.uid)
                 findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToWalletConnectionFragment())
             }
         })

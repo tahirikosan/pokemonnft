@@ -4,5 +4,6 @@ import com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon
 
 interface FirestoreDatabase {
 
+    suspend fun addUserToFirestore(userId: String): Boolean
     suspend fun getPokemonByHash(hash: String): Pokemon
 }
