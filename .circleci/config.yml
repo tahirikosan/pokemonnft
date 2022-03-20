@@ -68,20 +68,20 @@ jobs:
 
 
 
-  #unit_test:
-  #  executor:
-  #    name: android/android-machine
-  #    resource-class: large
-  #  steps:
-  #    - checkout
-  #    - android/restore-gradle-cache
-  #    - android/restore-build-cache
-  #    - run:
-  #        name: Run unit tests
-  #        command: |
-  #          ./gradlew testDevDebugUnitTest
-  #    - android/restore-gradle-cache
-  #    - android/restore-build-cache
+  unit_test:
+    executor:
+      name: android/android-machine
+      resource-class: large
+    steps:
+      - checkout
+      - android/restore-gradle-cache
+      - android/restore-build-cache
+      - run:
+          name: Run unit tests
+          command: |
+            ./gradlew testDevDebugUnitTest
+      - android/restore-gradle-cache
+      - android/restore-build-cache
 
 
 
