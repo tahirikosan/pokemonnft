@@ -33,14 +33,14 @@ android {
         debug {
             debuggable true
             buildConfigField "Boolean", "DEBUG_MODE", "true"
-            defaultConfig.versionName "1.0.0-dev"
+            defaultConfig.versionName "1.0.1-dev"
         }
         getByName("debug") {
             def releaseNote =  ['sh', '-c', 'git log -1 --pretty=%B'].execute().text.trim()
             buildConfigField("String", "note", "\"$releaseNote\"")
             firebaseAppDistribution {
                 serviceCredentialsFile="./google-services-account.json"
-                releaseNotes="$releaseNote"
+                releaseNotes="\"$releaseNote\""
                 groups="internal-tester"
             }
         }
