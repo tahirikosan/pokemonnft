@@ -23,65 +23,65 @@ jobs:
             ./gradlew assemble
       - android/save-gradle-cache
       - android/save-build-cache
-  #    - run:
-  #        name: Store Google Services Key
-  #        command: echo $GOOGLE_SERVICES_KEY | base64 -d > app/google-services.json
-#
-  #    - run:
-  #        name: Store Google Services Account
-  #        command: echo $GOOGLE_SERVICES_ACCOUNT | base64 -d > google-services-account.json
-#
-  #   #- restore_cache:
-  #   #    key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
-#
-  #    - run:
-  #        name: Download Dependencies
-  #        command: ./gradlew androidDependencies
-#
-  #    #- save_cache:
-  #    #    paths:
-  #    #      - ~/.gradle
-  #    #    key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
-#
-  #   #- run:
-  #   #    name: Run Tests
-  #   #    command: ./gradlew lintDebug testDebug
-##
-  #    - store_artifacts:
-  #        path: app/build/reports
-  #        destination: reports
-#
-  #    - store_test_results:
-  #        path: app/build/test-results
-#
-  #    - run:
-  #        name: Build debug APK
-  #        command: ./gradlew :app:assembleDebug
-#
-  #    - store_artifacts:
-  #        path: app/build/outputs/apk/
-  #        destination: apk
-#
-  #    - run:
-  #        name: Publish APK to Firebase Distribution
-  #        command: ./gradlew assembleDebug appDistributionUploadDevDebug
+    - run:
+        name: Store Google Services Key
+        command: echo $GOOGLE_SERVICES_KEY | base64 -d > app/google-services.json
+
+    - run:
+        name: Store Google Services Account
+        command: echo $GOOGLE_SERVICES_ACCOUNT | base64 -d > google-services-account.json
+
+    #- restore_cache:
+    #    key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
+
+    - run:
+        name: Download Dependencies
+        command: ./gradlew androidDependencies
+
+    #- save_cache:
+    #    paths:
+    #      - ~/.gradle
+    #    key: jars-{{ checksum "build.gradle.kts" }}-{{ checksum  "app/build.gradle.kts" }}
+
+    #- run:
+    #    name: Run Tests
+    #    command: ./gradlew lintDebug testDebug
+
+    - store_artifacts:
+        path: app/build/reports
+        destination: reports
+
+    - store_test_results:
+        path: app/build/test-results
+
+    - run:
+        name: Build debug APK
+        command: ./gradlew :app:assembleDebug
+
+    - store_artifacts:
+        path: app/build/outputs/apk/
+        destination: apk
+
+    - run:
+        name: Publish APK to Firebase Distribution
+        command: ./gradlew assembleDebug appDistributionUploadDevDebug
 
 
 
- #unit_test:
- #  executor:
- #    name: android/android-machine
- #    resource-class: large
- #  steps:
- #    - checkout
- #    - android/restore-gradle-cache
- #    - android/restore-build-cache
- #    - run:
- #        name: Run unit tests
- #        command: |
- #          ./gradlew testDevDebugUnitTest
- #    - android/restore-gradle-cache
- #    - android/restore-build-cache
+  #unit_test:
+  #  executor:
+  #    name: android/android-machine
+  #    resource-class: large
+  #  steps:
+  #    - checkout
+  #    - android/restore-gradle-cache
+  #    - android/restore-build-cache
+  #    - run:
+  #        name: Run unit tests
+  #        command: |
+  #          ./gradlew testDevDebugUnitTest
+  #    - android/restore-gradle-cache
+  #    - android/restore-build-cache
 
 
 

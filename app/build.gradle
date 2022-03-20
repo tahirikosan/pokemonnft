@@ -35,9 +35,10 @@ android {
             buildConfigField "Boolean", "DEBUG_MODE", "true"
         }
         getByName("debug") {
+            def releaseNote = 'git log -1 --pretty=%B'.execute()
             firebaseAppDistribution {
                 serviceCredentialsFile="./google-services-account.json"
-                releaseNotes="First publish"
+                releaseNotes="$releaseNote"
                 groups="internal-tester"
             }
         }
