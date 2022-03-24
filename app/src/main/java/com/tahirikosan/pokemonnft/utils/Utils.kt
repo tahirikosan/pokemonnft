@@ -35,4 +35,6 @@ object Utils {
             onBackPressed.invoke()
         }
     }
+
+    fun pokemonImageUrlGenerateById(pokemonId: Int) = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${pokemonId}.png"
 }

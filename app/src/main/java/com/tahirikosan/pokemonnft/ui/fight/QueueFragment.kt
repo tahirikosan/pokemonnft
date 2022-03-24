@@ -3,7 +3,6 @@ package com.tahirikosan.pokemonnft.ui.fight
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import androidx.core.app.Person.fromBundle
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
@@ -12,15 +11,12 @@ import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.R
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.response.fight.Room
-import com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon
 import com.tahirikosan.pokemonnft.databinding.FragmentQueueBinding
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_QUEUE
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.QUEUE_DOC_IC
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
-import com.tahirikosan.pokemonnft.utils.Utils
-import com.tahirikosan.pokemonnft.utils.Utils.visible
 
 class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::inflate) {
 

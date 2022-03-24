@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_gameMenuFragment_to_queueFragment"
             app:destination="@id/queueFragment" />
+        <action
+            android:id="@+id/action_gameMenuFragment_to_shoppingFragment"
+            app:destination="@id/shoppingFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -79,7 +82,7 @@
             app:argType="string" />
         <argument
             android:name="selectedPokemon"
-            app:argType="com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon" />
+            app:argType="com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon" />
         <action
             android:id="@+id/action_fightFragment_to_fightResultFragment"
             app:destination="@id/fightResultFragment" />
@@ -93,7 +96,7 @@
         android:label="QueueFragment">
         <argument
             android:name="selectedPokemon"
-            app:argType="com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon" />
+            app:argType="com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon" />
         <action
             android:id="@+id/action_queueFragment_to_fightFragment"
             app:destination="@id/fightFragment" />
@@ -101,12 +104,30 @@
     <fragment
         android:id="@+id/fightResultFragment"
         android:name="com.tahirikosan.pokemonnft.ui.fight.FightResultFragment"
-        android:label="FightResultFragment" >
+        android:label="FightResultFragment">
 
-        <argument android:name="isWon"
-            app:argType="boolean"/>
+        <argument
+            android:name="isWon"
+            app:argType="boolean" />
         <action
             android:id="@+id/action_fightResultFragment_to_gameMenuFragment"
             app:destination="@id/gameMenuFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/shoppingFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.shop.ShoppingFragment"
+        android:label="ShoppingFragment">
+        <action
+            android:id="@+id/action_shoppingFragment_to_pokemonDetailFragment"
+            app:destination="@id/pokemonDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/pokemonDetailFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.shop.detail.PokemonDetailFragment"
+        android:label="PokemonDetailFragment">
+
+        <argument
+            android:name="pokemonId"
+            app:argType="integer" />
     </fragment>
 </navigation>

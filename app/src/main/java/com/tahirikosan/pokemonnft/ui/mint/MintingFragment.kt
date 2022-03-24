@@ -19,7 +19,7 @@ class MintingFragment : BaseFragment<FragmentMintingBinding>(FragmentMintingBind
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observe()
-        viewModel.getMintedPokemon("0x567a3a3bc7e88100f5ac24eb052ff3688ee22e676215bff47cb4b792c1ec8b0c")
+        viewModel.getMintedPokemon("0xd2638055075e9018c27877deff3cfa033abecd41d19cdfd80bd30d8e34f9eb94")
         handleClicks()
     }
 
@@ -41,7 +41,7 @@ class MintingFragment : BaseFragment<FragmentMintingBinding>(FragmentMintingBind
             }
         })
         // observe mited pokemon
-        viewModel.mintedPokemon.observe(this, {
+        viewModel.mintedNFTPokemon.observe(this, {
             // binding.viewLoading.visible(it is Resource.Loading)
             when (it) {
                 is Resource.Loading -> {
@@ -61,7 +61,7 @@ class MintingFragment : BaseFragment<FragmentMintingBinding>(FragmentMintingBind
     private fun handleClicks() {
         with(binding) {
             btnMint.setOnClickListener {
-                viewModel.mintPokemon("0bf07f36c862d6a625e59407d10e5eee8fc17e5c5bc0e46fed917be9b69238bd")
+                viewModel.mintPokemon("d34c3e1cb5264a7372a5ee8a7e8aa6e28b8c2158797472dcacf2435195ffad05")
             }
         }
     }

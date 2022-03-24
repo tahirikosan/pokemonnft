@@ -6,7 +6,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
-import com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon
+import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon
 import com.tahirikosan.pokemonnft.databinding.FragmentGameMenuBinding
 import com.tahirikosan.pokemonnft.ui.adapter.pokemon.PokemonAdapter
 import com.tahirikosan.pokemonnft.utils.Utils
@@ -17,7 +17,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuBinding::inflate) {
 
-    private lateinit var pokemons: List<Pokemon>
+    private lateinit var pokemons: List<NFTPokemon>
     private val viewModel: GameMenuViewModel by viewModels()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -36,6 +36,10 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
             }
 
+            btnGoToShopping.setOnClickListener {
+                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToShoppingFragment())
+            }
+
             btnFight.setOnClickListener {
                 findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment(pokemons[0]))
             }
@@ -44,7 +48,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     private fun observe() {
         // Observe owner pokemons.
-        viewModel.ownerPokemonsResponse.observe(this, {
+        viewModel.ownerNFTPokemonsResponse.observe(this, {
             binding.viewLoading.visible(it is Resource.Loading)
             when (it) {
                 is Resource.Loading -> {

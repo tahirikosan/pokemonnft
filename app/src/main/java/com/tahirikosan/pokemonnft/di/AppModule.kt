@@ -9,10 +9,8 @@ import com.tahirikosan.pokemonnft.data.remote.RemoteDataSource
 import com.tahirikosan.pokemonnft.data.remote.api.FirebaseAuthenticator
 import com.tahirikosan.pokemonnft.data.remote.api.FirestoreDatabase
 import com.tahirikosan.pokemonnft.data.remote.api.NftApi
-import com.tahirikosan.pokemonnft.data.repository.AuthRepository
-import com.tahirikosan.pokemonnft.data.repository.BaseAuthRepository
-import com.tahirikosan.pokemonnft.data.repository.FirestoreRepository
-import com.tahirikosan.pokemonnft.data.repository.NFTRepository
+import com.tahirikosan.pokemonnft.data.remote.api.PokedexApi
+import com.tahirikosan.pokemonnft.data.repository.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,25 +36,37 @@ class AppModule {
         @ApplicationContext context: Context
     ): NftApi = remoteDataSource.buildApi(NftApi::class.java, context)
 
-
     @Singleton
     @Provides
     fun provideNftRepository(api: NftApi): NFTRepository = NFTRepository(api)
+
+    @Singleton
+    @Provides
+    fun providePokedexApi(
+        remoteDataSource: RemoteDataSource,
+        @ApplicationContext context: Context
+    ): PokedexApi = remoteDataSource.buildPokedexApi(PokedexApi::class.java, context)
+
+    @Singleton
+    @Provides
+    fun providePokedexRepository(
+        api: PokedexApi
+    ): PokedexRepository = PokedexRepository(api)
 
     //this means that anytime we need an authenticator Dagger will provide a Firebase authenticator.
     //in future if you want to swap out Firebase authentication for your own custom authenticator
     //you will simply come and swap here.
     @Singleton
     @Provides
-    fun provideAuthenticator() : FirebaseAuthenticator{
-        return  FirebaseAuthenticatorImpl()
+    fun provideAuthenticator(): FirebaseAuthenticator {
+        return FirebaseAuthenticatorImpl()
     }
 
     //this just takes the same idea as the authenticator. If we create another repository class
     //we can simply just swap here
     @Singleton
     @Provides
-    fun provideRepository(authenticator : FirebaseAuthenticator) : BaseAuthRepository {
+    fun provideRepository(authenticator: FirebaseAuthenticator): BaseAuthRepository {
         return AuthRepository(authenticator)
     }
 
@@ -68,15 +78,15 @@ class AppModule {
 
     @Singleton
     @Provides
-    fun provideFirestoreDatabase() : FirestoreDatabase{
-        return  FirestoreDatabaseImpl(firestore = FirebaseFirestore.getInstance())
+    fun provideFirestoreDatabase(): FirestoreDatabase {
+        return FirestoreDatabaseImpl(firestore = FirebaseFirestore.getInstance())
     }
 
     //this just takes the same idea as the authenticator. If we create another repository class
     //we can simply just swap here
     @Singleton
     @Provides
-    fun provideFirestoreRepository(firestoreDatabase: FirestoreDatabase) : FirestoreRepository {
+    fun provideFirestoreRepository(firestoreDatabase: FirestoreDatabase): FirestoreRepository {
         return FirestoreRepository(firestoreDatabase)
     }
 

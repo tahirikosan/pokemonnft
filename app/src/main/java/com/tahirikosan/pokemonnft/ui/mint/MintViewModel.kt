@@ -8,7 +8,7 @@ import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.data.repository.FirestoreRepository
 import com.tahirikosan.pokemonnft.data.repository.NFTRepository
 import com.tahirikosan.pokemonnft.data.response.mint.MintPokemonResponse
-import com.tahirikosan.pokemonnft.data.response.ownerpokemons.Pokemon
+import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -22,8 +22,8 @@ class MintViewModel @Inject constructor(
     private var _mintPokemonResponse = MutableLiveData<Resource<MintPokemonResponse>>()
     val mintPokemonResponse: LiveData<Resource<MintPokemonResponse>> get() = _mintPokemonResponse
 
-    private var _mintedPokemon = MutableLiveData<Resource<Pokemon>>()
-    val mintedPokemon: LiveData<Resource<Pokemon>> get() = _mintedPokemon
+    private var _mintedPokemon = MutableLiveData<Resource<NFTPokemon>>()
+    val mintedNFTPokemon: LiveData<Resource<NFTPokemon>> get() = _mintedPokemon
 
 
     fun mintPokemon(privateKey: String) = viewModelScope.launch {

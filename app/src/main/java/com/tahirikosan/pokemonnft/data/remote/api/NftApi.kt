@@ -1,7 +1,7 @@
 package com.tahirikosan.pokemonnft.data.remote.api
 
 import com.tahirikosan.pokemonnft.data.response.mint.MintPokemonResponse
-import com.tahirikosan.pokemonnft.data.response.ownerpokemons.GetOwnerPokemonsResponse
+import com.tahirikosan.pokemonnft.data.response.ownerpokemons.GetOwnerNFTPokemonsResponse
 import com.tahirikosan.pokemonnft.data.response.wallet.WalletResponse
 import retrofit2.http.*
 
@@ -19,7 +19,7 @@ interface NftApi {
     @POST("/get-owner-pokemons")
     suspend fun getOwnerPokemons(
         @Field("publicKey") publicKey: String
-    ): GetOwnerPokemonsResponse
+    ): GetOwnerNFTPokemonsResponse
 
     @FormUrlEncoded
     @POST("/mint-pokemon")

@@ -6,7 +6,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Pokemon(
+data class NFTPokemon(
     val attributes: List<Attribute>?=null,
     val description: String?=null,
     val dna: String?=null,
@@ -19,9 +19,9 @@ data class Pokemon(
     val tokenId: String?=null,
 ) : Parcelable {
     companion object {
-        fun DocumentSnapshot.toPokemon(): Pokemon? {
+        fun DocumentSnapshot.toPokemon(): NFTPokemon? {
             return try {
-                this.toObject(Pokemon::class.java)
+                this.toObject(NFTPokemon::class.java)
             } catch (e: Exception) {
                 Log.e(TAG, "Error converting user profile", e)
                 /* FirebaseCrashlytics.getInstance().log("Error converting user profile")

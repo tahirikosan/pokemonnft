@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.data.repository.NFTRepository
-import com.tahirikosan.pokemonnft.data.response.ownerpokemons.GetOwnerPokemonsResponse
+import com.tahirikosan.pokemonnft.data.response.ownerpokemons.GetOwnerNFTPokemonsResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,8 +16,8 @@ class GameMenuViewModel @Inject constructor(
     private val repository: NFTRepository
 ) : ViewModel() {
 
-    private var _ownerPokemonsResponse = MutableLiveData<Resource<GetOwnerPokemonsResponse>>()
-    val ownerPokemonsResponse: LiveData<Resource<GetOwnerPokemonsResponse>> get() = _ownerPokemonsResponse
+    private var _ownerPokemonsResponse = MutableLiveData<Resource<GetOwnerNFTPokemonsResponse>>()
+    val ownerNFTPokemonsResponse: LiveData<Resource<GetOwnerNFTPokemonsResponse>> get() = _ownerPokemonsResponse
 
 
     fun getOwnerPokemons(publicKey: String) = viewModelScope.launch {

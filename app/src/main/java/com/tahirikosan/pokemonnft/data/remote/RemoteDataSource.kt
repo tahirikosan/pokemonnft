@@ -11,6 +11,19 @@ import javax.inject.Inject
 class RemoteDataSource @Inject constructor() {
     companion object {
         private const val BASE_URL = BuildConfig.BASE_URL
+        private const val BASE_URL_POKEDEX = "https://pokeapi.co/api/v2/"
+    }
+
+    fun <Api> buildPokedexApi(
+        api: Class<Api>,
+        context: Context
+    ): Api {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL_POKEDEX)
+            .client(getRetrofitClient())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(api)
     }
 
     fun <Api> buildApi(
