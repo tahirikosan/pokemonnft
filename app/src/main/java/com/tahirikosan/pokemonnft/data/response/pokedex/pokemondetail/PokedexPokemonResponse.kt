@@ -25,6 +25,7 @@ data class PokedexPokemonResponse(
                 )
             }
             return PokemonModel(
+                id = this.id,
                 attributes = attributes,
                 image = Utils.pokemonImageUrlGenerateById(this.id),
                 name = this.name,

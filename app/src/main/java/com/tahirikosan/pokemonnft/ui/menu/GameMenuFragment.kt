@@ -8,7 +8,6 @@ import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon.Companion.toPokemonModel
-import com.tahirikosan.pokemonnft.data.response.pokedex.pokemondetail.PokedexPokemonResponse
 import com.tahirikosan.pokemonnft.data.response.pokedex.pokemondetail.PokedexPokemonResponse.Companion.toPokemonModel
 import com.tahirikosan.pokemonnft.databinding.FragmentGameMenuBinding
 import com.tahirikosan.pokemonnft.model.PokemonModel
@@ -25,26 +24,26 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
     private lateinit var nftPokemons: List<NFTPokemon>
     private lateinit var selectedPokemon: PokemonModel
     private lateinit var pokemonAdapter: PokemonAdapter
+    private lateinit var nftPokemonAdapter: NFTPokemonAdapter
     private val viewModel: GameMenuViewModel by viewModels()
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setNormalPokemonRecyclerView()
         handleClicks()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         observe()
-        viewModel.getUserPokemonIds()
     }
 
     override fun onStart() {
         super.onStart()
         viewModel.getOwnerNFTPokemons("0xd5207C1da3B83789F7B0b43A9154ca556FB642DA")
+        viewModel.getUserPokemonIds()
     }
 
-    override fun onStop() {
-        super.onDestroy()
-        pokemonAdapter.clear()
-    }
 
     private fun handleClicks() {
         with(binding) {
@@ -76,10 +75,12 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 is Resource.Success -> {
                     Timber.d("Pokemons: " + it.value.toString())
                     nftPokemons = it.value.pokemons
-                    binding.recyclerViewNftPokemons.adapter =
-                        NFTPokemonAdapter(nftPokemons) { nftPokemon ->
-                            selectedPokemon = nftPokemon.toPokemonModel()
-                        }
+                    nftPokemonAdapter = NFTPokemonAdapter(nftPokemons) { nftPokemon ->
+                        // Remove selection from normal pokemon adapter.
+                        pokemonAdapter.removeSelection()
+                        selectedPokemon = nftPokemon.toPokemonModel()
+                    }
+                    binding.recyclerViewNftPokemons.adapter = nftPokemonAdapter
                     binding.btnFight.visible(true)
                 }
                 is Resource.Failure -> {
@@ -110,7 +111,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
                 is Resource.Success -> {
                     val pokemon = it.value.toPokemonModel()
-                  //  normalPokemons.add(pokemon)
+                    //  normalPokemons.add(pokemon)
                     pokemonAdapter.addPokemon(pokemon)
                 }
                 is Resource.Failure -> {
@@ -122,6 +123,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     private fun setNormalPokemonRecyclerView() {
         pokemonAdapter = PokemonAdapter(arrayListOf()) {
+            // Remove nft pokemon selection.
+            nftPokemonAdapter.removeSelection()
             selectedPokemon = it
         }
         binding.recyclerViewPokemons.adapter = pokemonAdapter

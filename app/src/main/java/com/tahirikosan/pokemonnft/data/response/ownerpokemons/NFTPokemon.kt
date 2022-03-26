@@ -34,6 +34,7 @@ data class NFTPokemon(
 
         fun NFTPokemon.toPokemonModel(): PokemonModel {
             return PokemonModel(
+                id = this.id,
                 attributes = this.attributes,
                 image = this.image,
                 name = this.name,

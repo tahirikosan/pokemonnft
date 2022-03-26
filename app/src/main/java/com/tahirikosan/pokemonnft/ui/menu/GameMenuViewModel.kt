@@ -25,8 +25,8 @@ class GameMenuViewModel @Inject constructor(
     private var _ownerPokemonsResponse = MutableLiveData<Resource<GetOwnerNFTPokemonsResponse>>()
     val ownerNFTPokemonsResponse: LiveData<Resource<GetOwnerNFTPokemonsResponse>> get() = _ownerPokemonsResponse
 
-    private var _userPokemonIds = MutableLiveData<Resource<List<Int>>>()
-    val userPokemonIds: LiveData<Resource<List<Int>>> get() = _userPokemonIds
+    private var _userPokemonIds = MutableLiveData<Resource<List<Int>>?>()
+    val userPokemonIds: LiveData<Resource<List<Int>>?> get() = _userPokemonIds
 
     // Pokemon detail from pokedex api.
     private var _pokedexPokemonResponse = MutableLiveData<Resource<PokedexPokemonResponse>>()
@@ -41,6 +41,8 @@ class GameMenuViewModel @Inject constructor(
     fun getUserPokemonIds() = viewModelScope.launch {
         _userPokemonIds.value = Resource.Loading
         _userPokemonIds.value = firestoreRepository.getUserPokemonIds()
+        // To prevent get multiple pokemons.
+        _userPokemonIds.value = null
     }
 
     fun getPokemonsByIds(pokemonIds: List<Int>) = viewModelScope.launch {
