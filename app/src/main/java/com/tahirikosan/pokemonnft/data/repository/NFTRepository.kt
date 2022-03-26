@@ -19,8 +19,8 @@ class NFTRepository @Inject constructor(
         api.createWallet()
     }
 
-    suspend fun getOwnerPokemons(publicKey: String): Resource<GetOwnerNFTPokemonsResponse> = safeApiCall {
-        api.getOwnerPokemons(publicKey)
+    suspend fun getOwnerNFTPokemons(publicKey: String): Resource<GetOwnerNFTPokemonsResponse> = safeApiCall {
+        api.getOwnerNFTPokemons(publicKey)
     }
 
     suspend fun mintPokemon(privateKey: String):Resource<MintPokemonResponse> = safeApiCall {

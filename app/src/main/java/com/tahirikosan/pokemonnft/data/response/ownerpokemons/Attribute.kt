@@ -6,6 +6,6 @@ import kotlinx.parcelize.Parcelize
 // Pokemon attribute
 @Parcelize
 data class Attribute(
-    val trait_type: String?=null,
-    val value: Int?=null,
+    var trait_type: String?=null,
+    var value: Int?=null,
 ): Parcelable

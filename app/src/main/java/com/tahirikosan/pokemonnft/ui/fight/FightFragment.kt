@@ -9,6 +9,7 @@ import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.databinding.FragmentFightBinding
 import com.tahirikosan.pokemonnft.data.response.fight.Room
+import com.tahirikosan.pokemonnft.enum.PokemonStatEnum
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_USERS
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_coin
@@ -20,16 +21,12 @@ import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
 import dagger.hilt.android.AndroidEntryPoint
-import kotlin.random.Random
 
 
 @AndroidEntryPoint
 class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::inflate) {
 
 
-    private val SPEED_INDEX = 3
-    private val ATTACK_INDEX = 1
-    private val HEALTH_INDEX = 0
     private lateinit var firestore: FirebaseFirestore
     private lateinit var roomsRef: CollectionReference
     private lateinit var usersRef: CollectionReference
@@ -99,8 +96,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     private fun attack() {
         // Hit enemy and decrease it's health point.
-        val speed = selectedPokemon.attributes!![SPEED_INDEX].value!!
-        val attack = selectedPokemon.attributes!![ATTACK_INDEX].value!!
+        val speed = selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value!!
+        val attack = selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value!!
         val randomValue = (1..speed).random()
         //val damage = (attack + (attack * randomValue) / 100).toDouble()
         val damage = (10 + (10 * randomValue) / 100).toDouble()

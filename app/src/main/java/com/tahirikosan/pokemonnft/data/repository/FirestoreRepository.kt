@@ -16,4 +16,16 @@ class FirestoreRepository @Inject constructor(
     suspend fun addUserToFirestore(userId: String): Resource<Boolean> = safeApiCall {
         firestoreDatabase.addUserToFirestore(userId)
     }
+
+    suspend fun buyPokemon(pokemonPrice: Int, pokemonId: Int): Resource<Boolean> = safeApiCall {
+        firestoreDatabase.buyPokemon(pokemonPrice, pokemonId)
+    }
+
+    suspend fun isAlreadyHavePokemon(pokemonId: Int): Resource<Boolean> = safeApiCall {
+        firestoreDatabase.isAlreadyHavePokemon(pokemonId)
+    }
+
+    suspend fun getUserPokemonIds(): Resource<List<Int>> = safeApiCall {
+        firestoreDatabase.getUserPokemonIds()
+    }
 }

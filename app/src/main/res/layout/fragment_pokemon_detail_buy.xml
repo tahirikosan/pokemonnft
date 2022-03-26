@@ -1,27 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center_horizontal"
     android:orientation="vertical">
 
     <ImageView
         android:id="@+id/pokemonImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="256dp"
+        android:layout_gravity="center_horizontal"
         android:src="@mipmap/ic_launcher" />
 
     <TextView
+        android:id="@+id/tvPokemonName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Bulbasaur" />
+
+    <TextView
+        android:id="@+id/tvPokemonHp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:text="Pokemon HP :10" />
+
+    <TextView
+        android:id="@+id/tvPokemonAp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Pokemon AP :10" />
+
+    <TextView
+        android:id="@+id/tvPokemonDp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Pokemon DP :10" />
+
+    <TextView
+        android:id="@+id/tvPokemonSp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Pokemon SP :10" />
+
+    <TextView
+        android:id="@+id/tvPokemonPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="1000 Credit" />
 
     <Button
         android:id="@+id/buyPokemonButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:text="buy"/>
+        android:layout_gravity="center_horizontal"
+        android:text="buy"
+        android:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/view_loading"

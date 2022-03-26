@@ -17,7 +17,7 @@ interface NftApi {
 
     @FormUrlEncoded
     @POST("/get-owner-pokemons")
-    suspend fun getOwnerPokemons(
+    suspend fun getOwnerNFTPokemons(
         @Field("publicKey") publicKey: String
     ): GetOwnerNFTPokemonsResponse
 

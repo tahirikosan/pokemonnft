@@ -82,7 +82,7 @@
             app:argType="string" />
         <argument
             android:name="selectedPokemon"
-            app:argType="com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon" />
+            app:argType="com.tahirikosan.pokemonnft.model.PokemonModel" />
         <action
             android:id="@+id/action_fightFragment_to_fightResultFragment"
             app:destination="@id/fightResultFragment" />
@@ -96,7 +96,7 @@
         android:label="QueueFragment">
         <argument
             android:name="selectedPokemon"
-            app:argType="com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon" />
+            app:argType="com.tahirikosan.pokemonnft.model.PokemonModel" />
         <action
             android:id="@+id/action_queueFragment_to_fightFragment"
             app:destination="@id/fightFragment" />

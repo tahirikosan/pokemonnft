@@ -32,7 +32,7 @@ class PokedexAdapter(val pokedex: ArrayList<PokedexItemUIModel>, val pokemonClic
         holder.pokemonName.text = pokemon.name
         Glide.with(context).load(pokemon.imageUrl).into(holder.pokemonImage)
         holder.itemView.setOnClickListener {
-            pokemonClickListener.invoke(position+1)
+            pokemonClickListener.invoke(pokemon.id)
         }
     }
 
