@@ -14,6 +14,7 @@ import com.tahirikosan.pokemonnft.model.PokemonModel
 import com.tahirikosan.pokemonnft.ui.adapter.pokemon.NFTPokemonAdapter
 import com.tahirikosan.pokemonnft.ui.adapter.pokemon.PokemonAdapter
 import com.tahirikosan.pokemonnft.utils.Utils
+import com.tahirikosan.pokemonnft.utils.Utils.enable
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -23,8 +24,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     private lateinit var nftPokemons: List<NFTPokemon>
     private lateinit var selectedPokemon: PokemonModel
-    private lateinit var pokemonAdapter: PokemonAdapter
-    private lateinit var nftPokemonAdapter: NFTPokemonAdapter
+    private var pokemonAdapter: PokemonAdapter? = null
+    private var nftPokemonAdapter: NFTPokemonAdapter? = null
     private val viewModel: GameMenuViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,15 +48,15 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     private fun handleClicks() {
         with(binding) {
-            btnGoToMinting.setOnClickListener {
+            ivGoToMinting.setOnClickListener {
                 findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
             }
 
-            btnGoToShopping.setOnClickListener {
+            ivGoToShopping.setOnClickListener {
                 findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToShoppingFragment())
             }
 
-            btnFight.setOnClickListener {
+            ivFight.setOnClickListener {
                 findNavController().navigate(
                     GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment(
                         selectedPokemon
@@ -75,13 +76,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 is Resource.Success -> {
                     Timber.d("Pokemons: " + it.value.toString())
                     nftPokemons = it.value.pokemons
-                    nftPokemonAdapter = NFTPokemonAdapter(nftPokemons) { nftPokemon ->
-                        // Remove selection from normal pokemon adapter.
-                        pokemonAdapter.removeSelection()
-                        selectedPokemon = nftPokemon.toPokemonModel()
-                    }
-                    binding.recyclerViewNftPokemons.adapter = nftPokemonAdapter
-                    binding.btnFight.visible(true)
+                    setNFTPokemonRecyclerView()
+                    binding.ivFight.visible(true)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -111,8 +107,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
                 is Resource.Success -> {
                     val pokemon = it.value.toPokemonModel()
-                    //  normalPokemons.add(pokemon)
-                    pokemonAdapter.addPokemon(pokemon)
+                    pokemonAdapter?.addPokemon(pokemon)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -121,11 +116,22 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
         })
     }
 
+    private fun setNFTPokemonRecyclerView() {
+        nftPokemonAdapter = NFTPokemonAdapter(nftPokemons) { nftPokemon ->
+            // Remove selection from normal pokemon adapter.
+            pokemonAdapter?.removeSelection()
+            selectedPokemon = nftPokemon.toPokemonModel()
+            binding.ivFight.enable(true)
+        }
+        binding.recyclerViewNftPokemons.adapter = nftPokemonAdapter
+    }
+
     private fun setNormalPokemonRecyclerView() {
         pokemonAdapter = PokemonAdapter(arrayListOf()) {
             // Remove nft pokemon selection.
-            nftPokemonAdapter.removeSelection()
+            nftPokemonAdapter?.removeSelection()
             selectedPokemon = it
+            binding.ivFight.enable(true)
         }
         binding.recyclerViewPokemons.adapter = pokemonAdapter
     }
