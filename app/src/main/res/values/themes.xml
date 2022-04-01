@@ -29,6 +29,11 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">18sp</item>
     </style>
+    <style name="TitleSecondaryStyle" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/sf_bold</item>
+        <item name="android:textColor">@color/componentColor</item>
+        <item name="android:textSize">18sp</item>
+    </style>
     <style name="SubTitleStyle" parent="Widget.AppCompat.TextView">
         <item name="fontFamily">@font/sf_semibold</item>
         <item name="android:textColor">@color/white</item>

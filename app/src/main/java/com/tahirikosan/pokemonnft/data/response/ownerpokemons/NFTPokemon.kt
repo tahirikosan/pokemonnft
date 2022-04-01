@@ -38,7 +38,7 @@ data class NFTPokemon(
                 attributes = this.attributes,
                 image = this.image,
                 name = this.name,
-                isNft = true
+                isNft = true,
             )
         }
 

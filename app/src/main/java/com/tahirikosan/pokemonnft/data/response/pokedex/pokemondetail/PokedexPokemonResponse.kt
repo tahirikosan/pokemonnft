@@ -29,7 +29,8 @@ data class PokedexPokemonResponse(
                 attributes = attributes,
                 image = Utils.pokemonImageUrlGenerateById(this.id),
                 name = this.name,
-                isNft = false
+                isNft = false,
+                types = this.types
             )
         }
 

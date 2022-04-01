@@ -45,6 +45,7 @@ class NFTPokemonAdapter(
         fun bindViews(nftPokemon: NFTPokemon) {
             val pokemonCard = itemView.findViewById<ImageView>(R.id.pokemonCard)
             val pokemonImage = itemView.findViewById<ImageView>(R.id.iv_pokemon_image)
+            val tvPokemonName = itemView.findViewById<TextView>(R.id.tv_pokemon_name)
             val hpText = itemView.findViewById<TextView>(R.id.tv_hp)
             val atkText = itemView.findViewById<TextView>(R.id.tv_ap)
             val defText = itemView.findViewById<TextView>(R.id.tv_dp)
@@ -52,7 +53,7 @@ class NFTPokemonAdapter(
             val cardLayout = itemView.findViewById<ConstraintLayout>(R.id.card_layout)
             val ivSelected = itemView.findViewById<ImageView>(R.id.iv_selected)
 
-
+            tvPokemonName.text = nftPokemon.name
             // Set pokemon image.
             Glide.with(context).load(nftPokemon.image).into(pokemonImage)
             // Set pokemon stats.

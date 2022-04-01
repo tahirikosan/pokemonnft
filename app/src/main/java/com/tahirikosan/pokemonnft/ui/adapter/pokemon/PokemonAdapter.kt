@@ -51,6 +51,7 @@ class PokemonAdapter(
         fun bindViews(pokemonModel: PokemonModel) {
             val pokemonCard = itemView.findViewById<ImageView>(R.id.pokemonCard)
             val pokemonImage = itemView.findViewById<ImageView>(R.id.iv_pokemon_image)
+            val tvPokemonName = itemView.findViewById<TextView>(R.id.tv_pokemon_name)
             val hpText = itemView.findViewById<TextView>(R.id.tv_hp)
             val atkText = itemView.findViewById<TextView>(R.id.tv_ap)
             val defText = itemView.findViewById<TextView>(R.id.tv_dp)
@@ -59,6 +60,7 @@ class PokemonAdapter(
             val ivSelected = itemView.findViewById<ImageView>(R.id.iv_selected)
 
 
+            tvPokemonName.text = pokemonModel.name
             // Set pokemon image.
             Glide.with(context).load(pokemonModel.image).into(pokemonImage)
             // Set pokemon stats.
