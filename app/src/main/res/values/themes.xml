@@ -49,4 +49,9 @@
         <item name="android:textColor">@color/componentColor</item>
         <item name="android:textSize">14sp</item>
     </style>
+    <style name="FilterTextStyle" parent="Widget.AppCompat.TextView">
+        <item name="fontFamily">@font/sf_bold</item>
+        <item name="android:textColor">@color/componentColor</item>
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>
