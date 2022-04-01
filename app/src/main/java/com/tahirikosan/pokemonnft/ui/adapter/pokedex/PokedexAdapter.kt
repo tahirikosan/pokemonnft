@@ -15,8 +15,8 @@ class PokedexAdapter(val pokedex: ArrayList<PokedexItemUIModel>, val pokemonClic
 
     inner class PokedexViewHolder(binding: ItemPokedexBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val pokemonImage = binding.pokemonImage
-        val pokemonName = binding.pokemonName
+        val pokemonImage = binding.ivPokemonImage
+        val pokemonName = binding.tvPokemonName
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PokedexViewHolder {
