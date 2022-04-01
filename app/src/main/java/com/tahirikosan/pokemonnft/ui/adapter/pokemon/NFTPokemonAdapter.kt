@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tahirikosan.pokemonnft.R
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon
+import com.tahirikosan.pokemonnft.utils.Utils.visible
 
 class NFTPokemonAdapter(
     private val NFTPokemons: List<NFTPokemon>,
@@ -41,28 +42,30 @@ class NFTPokemonAdapter(
     }
 
     inner class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bindViews(NFTPokemon: NFTPokemon) {
+        fun bindViews(nftPokemon: NFTPokemon) {
             val pokemonCard = itemView.findViewById<ImageView>(R.id.pokemonCard)
-            val pokemonImage = itemView.findViewById<ImageView>(R.id.pokemonImage)
-            val hpText = itemView.findViewById<TextView>(R.id.hpText)
-            val atkText = itemView.findViewById<TextView>(R.id.atkText)
-            val defText = itemView.findViewById<TextView>(R.id.defText)
-            val spText = itemView.findViewById<TextView>(R.id.spdText)
+            val pokemonImage = itemView.findViewById<ImageView>(R.id.iv_pokemon_image)
+            val hpText = itemView.findViewById<TextView>(R.id.tv_hp)
+            val atkText = itemView.findViewById<TextView>(R.id.tv_ap)
+            val defText = itemView.findViewById<TextView>(R.id.tv_dp)
+            val spText = itemView.findViewById<TextView>(R.id.tv_sp)
             val cardLayout = itemView.findViewById<ConstraintLayout>(R.id.card_layout)
+            val ivSelected = itemView.findViewById<ImageView>(R.id.iv_selected)
+
 
             // Set pokemon image.
-            Glide.with(context).load(NFTPokemon.image).into(pokemonImage)
+            Glide.with(context).load(nftPokemon.image).into(pokemonImage)
             // Set pokemon stats.
-            hpText.text = "HP: ${NFTPokemon.attributes!![0].value}"
-            atkText.text = "AP: ${NFTPokemon.attributes!![1].value}"
-            defText.text = "DP: ${NFTPokemon.attributes!![2].value}"
-            spText.text = "SP: ${NFTPokemon.attributes!![3].value}"
+            hpText.text = "${nftPokemon.attributes!![0].value}"
+            atkText.text = "${nftPokemon.attributes!![1].value}"
+            defText.text = "${nftPokemon.attributes!![2].value}"
+            spText.text = "${nftPokemon.attributes!![3].value}"
 
 
             if (adapterPosition == selectedPokemonPosition) {
-                cardLayout.setBackgroundColor(context.getColor(R.color.red))
+                ivSelected.visible(true)
             } else {
-                cardLayout.setBackgroundColor(context.getColor(R.color.teal_200))
+                ivSelected.visible(false)
             }
 
 
@@ -73,7 +76,7 @@ class NFTPokemonAdapter(
                 notifyItemChanged(oldSelectedPokemonPosition)
                 notifyItemChanged(selectedPokemonPosition)
                 //
-                selectNFTPokemon.invoke(NFTPokemon)
+                selectNFTPokemon.invoke(nftPokemon)
             }
         }
     }

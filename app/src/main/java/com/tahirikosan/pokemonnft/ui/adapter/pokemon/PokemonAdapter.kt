@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.tahirikosan.pokemonnft.R
 import com.tahirikosan.pokemonnft.model.PokemonModel
+import com.tahirikosan.pokemonnft.utils.Utils.visible
 
 class PokemonAdapter(
     private val pokemonModels: ArrayList<PokemonModel>,
@@ -49,26 +50,27 @@ class PokemonAdapter(
         @SuppressLint("SetTextI18n")
         fun bindViews(pokemonModel: PokemonModel) {
             val pokemonCard = itemView.findViewById<ImageView>(R.id.pokemonCard)
-            val pokemonImage = itemView.findViewById<ImageView>(R.id.pokemonImage)
-            val hpText = itemView.findViewById<TextView>(R.id.hpText)
-            val atkText = itemView.findViewById<TextView>(R.id.atkText)
-            val defText = itemView.findViewById<TextView>(R.id.defText)
-            val spText = itemView.findViewById<TextView>(R.id.spdText)
+            val pokemonImage = itemView.findViewById<ImageView>(R.id.iv_pokemon_image)
+            val hpText = itemView.findViewById<TextView>(R.id.tv_hp)
+            val atkText = itemView.findViewById<TextView>(R.id.tv_ap)
+            val defText = itemView.findViewById<TextView>(R.id.tv_dp)
+            val spText = itemView.findViewById<TextView>(R.id.tv_sp)
             val cardLayout = itemView.findViewById<ConstraintLayout>(R.id.card_layout)
+            val ivSelected = itemView.findViewById<ImageView>(R.id.iv_selected)
 
 
             // Set pokemon image.
             Glide.with(context).load(pokemonModel.image).into(pokemonImage)
             // Set pokemon stats.
-            hpText.text = "HP: ${pokemonModel.attributes!![0].value}"
-            atkText.text = "AP: ${pokemonModel.attributes!![1].value}"
-            defText.text = "DP: ${pokemonModel.attributes!![2].value}"
-            spText.text = "SP: ${pokemonModel.attributes!![3].value}"
+            hpText.text = "${pokemonModel.attributes!![0].value}"
+            atkText.text = "${pokemonModel.attributes!![1].value}"
+            defText.text = "${pokemonModel.attributes!![2].value}"
+            spText.text = "${pokemonModel.attributes!![3].value}"
 
             if (adapterPosition == selectedPokemonPosition) {
-                cardLayout.setBackgroundColor(context.getColor(R.color.red))
+                ivSelected.visible(true)
             } else {
-                cardLayout.setBackgroundColor(context.getColor(R.color.teal_200))
+                ivSelected.visible(false)
             }
 
             itemView.setOnClickListener {
