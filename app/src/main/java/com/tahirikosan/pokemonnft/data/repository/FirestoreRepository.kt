@@ -3,6 +3,7 @@ package com.tahirikosan.pokemonnft.data.repository
 import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.data.remote.api.FirestoreDatabase
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon
+import com.tahirikosan.pokemonnft.data.response.user.User
 import javax.inject.Inject
 
 class FirestoreRepository @Inject constructor(
@@ -27,5 +28,8 @@ class FirestoreRepository @Inject constructor(
 
     suspend fun getUserPokemonIds(): Resource<List<Int>> = safeApiCall {
         firestoreDatabase.getUserPokemonIds()
+    }
+    suspend fun getUser(): Resource<User> = safeApiCall {
+        firestoreDatabase.getUser()
     }
 }

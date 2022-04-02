@@ -7,6 +7,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.tahirikosan.pokemonnft.data.remote.api.FirestoreDatabase
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon.Companion.toPokemon
+import com.tahirikosan.pokemonnft.data.response.user.User
 import com.tahirikosan.pokemonnft.data.response.user.User.Companion.toUser
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
@@ -15,6 +16,18 @@ import javax.inject.Inject
 class FirestoreDatabaseImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : FirestoreDatabase {
+
+    override suspend fun getUser(): User {
+        return try {
+            firestore.collection("users")
+                .document(FirebaseAuth.getInstance().currentUser?.uid!!)
+                .get()
+                .await().toUser()!!
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
 
     override suspend fun getPokemonByHash(hash: String): NFTPokemon {
         lateinit var NFTPokemon: NFTPokemon

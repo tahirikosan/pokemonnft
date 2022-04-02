@@ -9,6 +9,7 @@ import com.tahirikosan.pokemonnft.data.repository.FirestoreRepository
 import com.tahirikosan.pokemonnft.data.repository.PokedexRepository
 import com.tahirikosan.pokemonnft.data.response.pokedex.PokedexByTypeResponse
 import com.tahirikosan.pokemonnft.data.response.pokedex.pokemondetail.PokedexPokemonResponse
+import com.tahirikosan.pokemonnft.data.response.user.User
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -31,6 +32,9 @@ class ShoppingViewModel @Inject constructor(
     private var _isUserHavePokemon = MutableLiveData<Resource<Boolean>>()
     val isUserHavePokemon: LiveData<Resource<Boolean>> get() = _isUserHavePokemon
 
+    private var _userInfo = MutableLiveData<Resource<User>>()
+    val userInfo: LiveData<Resource<User>> get() = _userInfo
+
     fun getPokedexByType(type: Int) = viewModelScope.launch {
         _pokedexTypeResponse.value = Resource.Loading
         _pokedexTypeResponse.value = repository.getPokedexByType(type)
@@ -49,5 +53,10 @@ class ShoppingViewModel @Inject constructor(
     fun isAlreadyHavePokemon(pokemonId: Int) = viewModelScope.launch {
         _isUserHavePokemon.value = Resource.Loading
         _isUserHavePokemon.value = firestoreRepository.isAlreadyHavePokemon(pokemonId)
+    }
+
+    fun getUserInfo() = viewModelScope.launch {
+        _userInfo.value = Resource.Loading
+        _userInfo.value = firestoreRepository.getUser()
     }
 }
