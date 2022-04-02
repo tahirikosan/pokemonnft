@@ -24,6 +24,7 @@ interface NftApi {
     @FormUrlEncoded
     @POST("/mint-pokemon")
     suspend fun mintPokemon(
-        @Field("privateKey") privateKey: String
+        @Field("privateKey") privateKey: String,
+        @Field("userId") userId: String
     ): MintPokemonResponse
 }

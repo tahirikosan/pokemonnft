@@ -23,7 +23,7 @@ class NFTRepository @Inject constructor(
         api.getOwnerNFTPokemons(publicKey)
     }
 
-    suspend fun mintPokemon(privateKey: String):Resource<MintPokemonResponse> = safeApiCall {
-        api.mintPokemon(privateKey)
+    suspend fun mintPokemon(privateKey: String, userId: String):Resource<MintPokemonResponse> = safeApiCall {
+        api.mintPokemon(privateKey, userId)
     }
 }
