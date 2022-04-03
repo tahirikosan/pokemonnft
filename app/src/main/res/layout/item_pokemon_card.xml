@@ -181,6 +181,7 @@
         android:layout_height="32dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/ic_flame"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

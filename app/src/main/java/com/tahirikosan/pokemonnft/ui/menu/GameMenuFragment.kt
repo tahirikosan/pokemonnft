@@ -15,6 +15,7 @@ import com.tahirikosan.pokemonnft.ui.adapter.pokemon.NFTPokemonAdapter
 import com.tahirikosan.pokemonnft.ui.adapter.pokemon.PokemonAdapter
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
+import com.tahirikosan.pokemonnft.utils.Utils.showToastShort
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -23,7 +24,7 @@ import timber.log.Timber
 class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuBinding::inflate) {
 
     private lateinit var nftPokemons: List<NFTPokemon>
-    private lateinit var selectedPokemon: PokemonModel
+    private var selectedPokemon: PokemonModel?=null
     private var pokemonAdapter: PokemonAdapter? = null
     private var nftPokemonAdapter: NFTPokemonAdapter? = null
     private val viewModel: GameMenuViewModel by viewModels()
@@ -57,11 +58,15 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
             }
 
             ivFight.setOnClickListener {
-                findNavController().navigate(
-                    GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment(
-                        selectedPokemon
+                if(selectedPokemon != null){
+                    findNavController().navigate(
+                        GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment(
+                            selectedPokemon!!
+                        )
                     )
-                )
+                }else{
+                    showToastShort(requireContext(), "Please select a pokemon to fight!")
+                }
             }
         }
     }

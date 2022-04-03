@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.databinding.FragmentFightBinding
@@ -35,6 +36,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     private var isGameOver: Boolean = false
     private var isLeftTheGame: Boolean = false
+    private var myMaxHpAlreadySet: Boolean = false
+    private var enemyMaxHpAlreadySet: Boolean = false
 
     private val userId by lazy {
         args.userId
@@ -54,6 +57,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         firestore = FirebaseFirestore.getInstance()
         roomsRef = firestore.collection(COLLECTION_ROOMS)
         usersRef = firestore.collection(COLLECTION_USERS)
+        setMyPokemonView()
         setPlayerHp()
         listenChanges()
         Utils.showToastShort(requireContext(), selectedPokemon.name.toString() + "  " + roomId)
@@ -65,13 +69,16 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
         // Handle back button functionality.
         onBackPressed {
-            //youLose()
-            //roomsRef.document(roomId).delete()
+            if (!isGameOver) {
+                isLeftTheGame = true
+                youLeftTheRoom()
+            }
         }
     }
 
     override fun onStop() {
         super.onStop()
+        // Check if suer left the game.
         if (!isGameOver) {
             isLeftTheGame = true
             youLeftTheRoom()
@@ -80,16 +87,34 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     override fun onResume() {
         super.onResume()
+        // Check if suer left the game.
         if (isLeftTheGame) {
             findNavController().navigate(FightFragmentDirections.actionFightFragmentToGameMenuFragment())
         }
     }
 
+    private fun setMyPokemonView() {
+        with(binding) {
+            myPokemonView.tvHp.text =
+                selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value.toString()
+            myPokemonView.tvAp.text =
+                selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value.toString()
+            myPokemonView.tvDp.text =
+                selectedPokemon.attributes!![PokemonStatEnum.DEFENCE_STAT.index].value.toString()
+            myPokemonView.tvSp.text =
+                selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value.toString()
+            // Set pokemon image.
+            Glide.with(requireContext()).load(selectedPokemon.image)
+                .into(myPokemonView.ivPokemonImage)
+        }
+    }
+
+    // Set player hp on firebase
     private fun setPlayerHp() {
         roomsRef.document(roomId)
             .update(
                 mapOf(
-                    "$field_health.${userId}" to selectedPokemon.attributes!![0].value
+                    "$field_health.${userId}" to selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value
                 )
             )
     }
@@ -105,6 +130,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         roomsRef.document(roomId).get().addOnSuccessListener {
             val room = it.toObject(Room::class.java)
             var enemyHp = room!!.health!![enemyId]!!
+            setEnemyMaxHealthProgressOnce(enemyHp)
             // Decrease enemy hp with respect to user damage.
             enemyHp -= damage.toInt()
             if (enemyHp < 0) {
@@ -113,6 +139,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             // Then update the enemyHp.
             roomsRef.document(roomId)
                 .update("$field_health.${enemyId}", enemyHp).addOnSuccessListener {
+                    // Set enemy hp view.
+                    binding.progressEnemyHealth.progress = enemyHp
                     if (enemyHp == 0) {
                         isGameOver = true
                         youWon()
@@ -147,8 +175,12 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                 Log.d("TAG", "Current data: ${snapshot.data}")
                 val room = snapshot.toObject(Room::class.java)
 
+                val myHp = room!!.health!![userId]!!
+                // Set enemy hp view.
+                binding.progressMyHealth.progress = myHp
+                setMyMaxHealthProgressOnce(myHp)
                 // Check if your hp is zero. That means you lose.
-                if (room!!.health!![userId]!! == 0) {
+                if (myHp == 0) {
                     isGameOver = true
                     youLose()
                 }
@@ -167,6 +199,22 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             } else {
                 Log.d("TAG", "Current data: null")
             }
+        }
+    }
+
+    private fun setMyMaxHealthProgressOnce(maxHp: Int) {
+        if (!myMaxHpAlreadySet) {
+            binding.progressMyHealth.max = maxHp
+            binding.progressMyHealth.progress = maxHp
+            myMaxHpAlreadySet = true
+        }
+    }
+
+    private fun setEnemyMaxHealthProgressOnce(maxHp: Int) {
+        if (!enemyMaxHpAlreadySet) {
+            binding.progressEnemyHealth.max = maxHp
+            binding.progressEnemyHealth.progress = maxHp
+            enemyMaxHpAlreadySet = true
         }
     }
 
