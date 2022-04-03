@@ -6,7 +6,7 @@
     android:background="@color/primaryColor">
 
     <include
-        android:id="@+id/enemyCard"
+        android:id="@+id/enemyPokemonView"
         layout="@layout/item_pokemon_card"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
@@ -22,9 +22,9 @@
         android:max="100"
         android:progressTint="@color/red"
         android:layout_marginTop="4dp"
-        app:layout_constraintStart_toStartOf="@id/enemyCard"
-        app:layout_constraintTop_toBottomOf="@id/enemyCard"
-        app:layout_constraintEnd_toEndOf="@id/enemyCard"/>
+        app:layout_constraintStart_toStartOf="@id/enemyPokemonView"
+        app:layout_constraintTop_toBottomOf="@id/enemyPokemonView"
+        app:layout_constraintEnd_toEndOf="@id/enemyPokemonView"/>
 
     <include
         android:id="@+id/myPokemonView"

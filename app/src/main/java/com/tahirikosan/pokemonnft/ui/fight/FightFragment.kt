@@ -8,16 +8,23 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.base.BaseFragment
+import com.tahirikosan.pokemonnft.data.response.fight.PlayerPokemon
 import com.tahirikosan.pokemonnft.databinding.FragmentFightBinding
 import com.tahirikosan.pokemonnft.data.response.fight.Room
 import com.tahirikosan.pokemonnft.enum.PokemonStatEnum
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_USERS
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.ap
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.dp
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_coin
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_health
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_pvp
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_turn
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.hp
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.imageUrl
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.playersPokemons
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.sp
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
@@ -58,6 +65,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         roomsRef = firestore.collection(COLLECTION_ROOMS)
         usersRef = firestore.collection(COLLECTION_USERS)
         setMyPokemonView()
+        setMyPokemonInfo()
         setPlayerHp()
         listenChanges()
         Utils.showToastShort(requireContext(), selectedPokemon.name.toString() + "  " + roomId)
@@ -69,10 +77,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
         // Handle back button functionality.
         onBackPressed {
-            if (!isGameOver) {
-                isLeftTheGame = true
-                youLeftTheRoom()
-            }
+
         }
     }
 
@@ -93,6 +98,19 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
+
+    private fun setEnemyPokemonView(room: Room) {
+        with(binding) {
+            enemyPokemonView.tvHp.text = room.playersPokemons?.get(enemyId)?.hp.toString()
+            enemyPokemonView.tvAp.text = room.playersPokemons?.get(enemyId)?.ap.toString()
+            enemyPokemonView.tvDp.text =room.playersPokemons?.get(enemyId)?.dp.toString()
+            enemyPokemonView.tvSp.text = room.playersPokemons?.get(enemyId)?.sp.toString()
+            // Set pokemon image.
+            Glide.with(requireContext()).load(room.playersPokemons?.get(enemyId)?.imageUrl)
+                .into(enemyPokemonView.ivPokemonImage)
+        }
+    }
+
     private fun setMyPokemonView() {
         with(binding) {
             myPokemonView.tvHp.text =
@@ -109,7 +127,24 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
-    // Set player hp on firebase
+    // Sends selected pokemon info to firestore game room.
+    private fun setMyPokemonInfo() {
+        roomsRef.document(roomId)
+            .update(
+                mapOf(
+                    "$playersPokemons.${userId}" to hashMapOf(
+                        hp to selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value,
+                        ap to selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value,
+                        dp to selectedPokemon.attributes!![PokemonStatEnum.DEFENCE_STAT.index].value,
+                        sp to selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value,
+                        imageUrl to selectedPokemon.image,
+                    )
+                )
+            )
+    }
+
+
+    // Sends player hp to firestore game room.
     private fun setPlayerHp() {
         roomsRef.document(roomId)
             .update(
@@ -175,7 +210,10 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                 Log.d("TAG", "Current data: ${snapshot.data}")
                 val room = snapshot.toObject(Room::class.java)
 
-                val myHp = room!!.health!![userId]!!
+                // Set enemy pokemon card view.
+                setEnemyPokemonView(room!!)
+
+                val myHp = room.health!![userId]!!
                 // Set enemy hp view.
                 binding.progressMyHealth.progress = myHp
                 setMyMaxHealthProgressOnce(myHp)
