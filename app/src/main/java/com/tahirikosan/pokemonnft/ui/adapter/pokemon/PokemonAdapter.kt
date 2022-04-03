@@ -49,7 +49,7 @@ class PokemonAdapter(
     inner class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @SuppressLint("SetTextI18n")
         fun bindViews(pokemonModel: PokemonModel) {
-            val pokemonCard = itemView.findViewById<ImageView>(R.id.pokemonCard)
+            val pokemonCard = itemView.findViewById<ImageView>(R.id.iv_pokemon_card)
             val pokemonImage = itemView.findViewById<ImageView>(R.id.iv_pokemon_image)
             val tvPokemonName = itemView.findViewById<TextView>(R.id.tv_pokemon_name)
             val hpText = itemView.findViewById<TextView>(R.id.tv_hp)
@@ -71,8 +71,10 @@ class PokemonAdapter(
 
             if (adapterPosition == selectedPokemonPosition) {
                 ivSelected.visible(true)
+                pokemonCard.setImageResource(R.drawable.pokemon_card_selected)
             } else {
                 ivSelected.visible(false)
+                pokemonCard.setImageResource(R.drawable.pokemon_card_unselected)
             }
 
             itemView.setOnClickListener {

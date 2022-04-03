@@ -106,7 +106,7 @@ class MintingFragment : BaseFragment<FragmentMintingBinding>(FragmentMintingBind
                     .repeat(2)
                     .playOn(binding.pokeball)
                 viewModel.mintPokemon(
-                    "d34c3e1cb5264a7372a5ee8a7e8aa6e28b8c2158797472dcacf2435195ffad05",
+                    "eae570fd82153d2f5ddff3062fd88969eff3852077809f7f0c034fe0221e8c23",
                     user.userId!!
                 )
             }
