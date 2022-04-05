@@ -246,7 +246,6 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                 if (room.players!!.size == 1) {
                     // That means other user left the game. So you won
                     isGameOver = true
-                    deleteRoom()
                     youWon()
                 }
             } else {

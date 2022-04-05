@@ -73,8 +73,6 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
     }
 
     private fun routeUserToFightPage(roomId: String) {
-        // Stop listen to room changes.
-        roomListener.remove()
         val enemyId = players.first {
             it != myUserId
         }
@@ -104,6 +102,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
                         DocumentChange.Type.ADDED -> {
                             val room = dc.document.toObject(Room::class.java)
                             setPlayers(room.players!!)
+                            roomListener.remove()
                             routeUserToFightPage(roomId = room.roomId!!)
                         }
                         // DocumentChange.Type.MODIFIED -> Log.d(TAG, "Modified city: ${dc.document.data}")
@@ -112,11 +111,6 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
                 }
             }
-        listenAndJoinRoom()
-    }
-
-    private fun listenAndJoinRoom() {
-
     }
 
     private fun setPlayers(newplayers: ArrayList<String>) {
