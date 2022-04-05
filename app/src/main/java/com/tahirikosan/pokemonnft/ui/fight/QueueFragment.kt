@@ -91,7 +91,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
     private fun listenChanges() {
         // Listen game room and join it.
-        roomListener = roomsRef.whereArrayContains(FirebaseUtils.field_players, myUserId)
+        roomListener = roomsRef.whereArrayContains(field_players, myUserId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TAG", "Listen failed.", e)

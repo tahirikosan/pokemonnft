@@ -8,7 +8,6 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.base.BaseFragment
-import com.tahirikosan.pokemonnft.data.response.fight.PlayerPokemon
 import com.tahirikosan.pokemonnft.databinding.FragmentFightBinding
 import com.tahirikosan.pokemonnft.data.response.fight.Room
 import com.tahirikosan.pokemonnft.enum.PokemonStatEnum
@@ -24,16 +23,20 @@ import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_turn
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.hp
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.imageUrl
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.playersPokemons
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.pokemonName
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.sp
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
+import com.tahirikosan.pokemonnft.utils.Utils.showToastLong
+import com.tahirikosan.pokemonnft.utils.Utils.showToastShort
 import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
 class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::inflate) {
-
+    // Reduces pokemon damage.
+    private val DAMAGE_REDUCER = 5
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var roomsRef: CollectionReference
@@ -101,9 +104,10 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     private fun setEnemyPokemonView(room: Room) {
         with(binding) {
+            enemyPokemonView.tvPokemonName.text = room.playersPokemons?.get(enemyId)?.pokemonName
             enemyPokemonView.tvHp.text = room.playersPokemons?.get(enemyId)?.hp.toString()
             enemyPokemonView.tvAp.text = room.playersPokemons?.get(enemyId)?.ap.toString()
-            enemyPokemonView.tvDp.text =room.playersPokemons?.get(enemyId)?.dp.toString()
+            enemyPokemonView.tvDp.text = room.playersPokemons?.get(enemyId)?.dp.toString()
             enemyPokemonView.tvSp.text = room.playersPokemons?.get(enemyId)?.sp.toString()
             // Set pokemon image.
             Glide.with(requireContext()).load(room.playersPokemons?.get(enemyId)?.imageUrl)
@@ -113,6 +117,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     private fun setMyPokemonView() {
         with(binding) {
+            myPokemonView.tvPokemonName.text =
+                selectedPokemon.name
             myPokemonView.tvHp.text =
                 selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value.toString()
             myPokemonView.tvAp.text =
@@ -133,6 +139,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             .update(
                 mapOf(
                     "$playersPokemons.${userId}" to hashMapOf(
+                        pokemonName to selectedPokemon.name,
                         hp to selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value,
                         ap to selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value,
                         dp to selectedPokemon.attributes!![PokemonStatEnum.DEFENCE_STAT.index].value,
@@ -156,18 +163,26 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     private fun attack() {
         // Hit enemy and decrease it's health point.
-        val speed = selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value!!
-        val attack = selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value!!
-        val randomValue = (1..speed).random()
-        //val damage = (attack + (attack * randomValue) / 100).toDouble()
-        val damage = (10 + (10 * randomValue) / 100).toDouble()
+        val criticalChance = selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value!!
+        Log.d("CRIT Chance", criticalChance.toString())
+        val attack = selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value!! / DAMAGE_REDUCER
+        val randomValue = (1..100).random()
+        var finalDamage = attack
+        // If hit crit.
+        if (randomValue <= criticalChance) {
+            finalDamage = attack * 2
+            showToastShort(requireContext(), "CRIT:  $finalDamage")
+        } else {
+            showToastShort(requireContext(), "NORMAL: $finalDamage")
+        }
+
         // Get enemy health info.
         roomsRef.document(roomId).get().addOnSuccessListener {
             val room = it.toObject(Room::class.java)
             var enemyHp = room!!.health!![enemyId]!!
             setEnemyMaxHealthProgressOnce(enemyHp)
             // Decrease enemy hp with respect to user damage.
-            enemyHp -= damage.toInt()
+            enemyHp -= finalDamage
             if (enemyHp < 0) {
                 enemyHp = 0
             }

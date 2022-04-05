@@ -11,6 +11,7 @@ import com.tahirikosan.pokemonnft.data.response.user.User
 import com.tahirikosan.pokemonnft.databinding.FragmentMintingBinding
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
+import com.tahirikosan.pokemonnft.utils.Utils.showToastShort
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -50,7 +51,8 @@ class MintingFragment : BaseFragment<FragmentMintingBinding>(FragmentMintingBind
                     user.coin = user.coin!! - mintPrice
                     binding.tvBalance.text = "Balance: ${user.coin}"
                     binding.btnMint.enable(user.coin!! >= mintPrice)
-                    viewModel.getMintedPokemon(it.value.hash)
+                    showToastShort(requireContext(), "Pokemon Successfully Minted!")
+                    //viewModel.getMintedPokemon(it.value.hash)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -106,7 +108,7 @@ class MintingFragment : BaseFragment<FragmentMintingBinding>(FragmentMintingBind
                     .repeat(2)
                     .playOn(binding.pokeball)
                 viewModel.mintPokemon(
-                    "eae570fd82153d2f5ddff3062fd88969eff3852077809f7f0c034fe0221e8c23",
+                    "f983f1cd75c94a3900093463787bb6b9c96ec897936ce91f9fe78e41bcc44187",
                     user.userId!!
                 )
             }

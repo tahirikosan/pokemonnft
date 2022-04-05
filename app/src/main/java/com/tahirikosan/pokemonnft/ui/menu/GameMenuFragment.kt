@@ -42,7 +42,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     override fun onStart() {
         super.onStart()
-        viewModel.getOwnerNFTPokemons("0x6d4412f3eA4BB9f48DBaE56B855D1FBCf2efFf32")
+        viewModel.getOwnerNFTPokemons("0x64644a2446572912b0257F7615f23825B1E52F99")
         viewModel.getUserPokemonIds()
     }
 

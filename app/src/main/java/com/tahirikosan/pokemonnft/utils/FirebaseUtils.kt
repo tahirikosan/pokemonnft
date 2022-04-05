@@ -12,6 +12,9 @@ object FirebaseUtils {
     const val field_players = "players"
     const val field_coin = "coin"
 
+    // Pokemon name
+    const val pokemonName = "pokemonName"
+
     // Health point
     const val hp = "hp"
 

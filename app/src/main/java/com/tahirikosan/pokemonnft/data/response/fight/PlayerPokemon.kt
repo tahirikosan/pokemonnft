@@ -5,6 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class PlayerPokemon(
+    var pokemonName: String?=null,
     var hp: Int?=null,
     var ap: Int?=null,
     var dp: Int?=null,
