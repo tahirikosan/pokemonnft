@@ -25,18 +25,13 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         super.onViewCreated(view, savedInstanceState)
         registerObservers()
         with(binding) {
-            btnRegister.setOnClickListener {
+            btnSignup.setOnClickListener {
                 viewLoading.isVisible = true
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
                 val confirmPass = etPasswordConfirm.text.toString()
                 viewModel.signUpUser(email, password)
             }
-
-            btnLogin.setOnClickListener {
-                findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToAuthFragment())
-            }
-
         }
     }
 
