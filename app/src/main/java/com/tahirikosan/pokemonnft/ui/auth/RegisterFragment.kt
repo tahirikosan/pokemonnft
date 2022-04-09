@@ -9,7 +9,9 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
+import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.databinding.FragmentRegisterBinding
+import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -21,17 +23,14 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-
         registerObservers()
-        listenToChannels()
-        binding?.apply {
+        with(binding) {
             btnRegister.setOnClickListener {
                 viewLoading.isVisible = true
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
                 val confirmPass = etPasswordConfirm.text.toString()
-                viewModel.signUpUser(email, password, confirmPass)
+                viewModel.signUpUser(email, password)
             }
 
             btnLogin.setOnClickListener {
@@ -42,54 +41,35 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     }
 
     private fun registerObservers() {
-        viewModel.currentUser.observe(viewLifecycleOwner, { user ->
-            user?.let {
-                viewModel.addUserToFirestore(userId = user.uid)
-                findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToWalletConnectionFragment())
+        viewModel.currentUser.observe(viewLifecycleOwner, { it ->
+            binding.viewLoading.visible(it is Resource.Loading)
+            when (it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    viewModel.addUserToFirestore(userId = it.value.uid)
+                }
+                is Resource.Failure -> {
+
+                }
             }
         })
-    }
 
-    private fun listenToChannels() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewModel.allEventsFlow.collect { event ->
-                when (event) {
-                    is AuthViewModel.AllEvents.Error -> {
-                        binding?.apply {
-                            /*errorTxt.text = event.error
-                            progressBarSignup.isInvisible = true*/
-                        }
-                    }
-                    is AuthViewModel.AllEvents.Message -> {
-                        Toast.makeText(requireContext(), event.message, Toast.LENGTH_SHORT).show()
-                    }
-                    is AuthViewModel.AllEvents.ErrorCode -> {
-                        /*  if (event.code == 1)
-                              binding?.apply {
-                                  userEmailEtvl.error = "email should not be empty"
-                                  progressBarSignup.isInvisible = true
-                              }
-
-
-                          if (event.code == 2)
-                              binding?.apply {
-                                  userPasswordEtvl.error = "password should not be empty"
-                                  progressBarSignup.isInvisible = true
-                              }
-
-                          if (event.code == 3)
-                              binding?.apply {
-                                  confirmPasswordEtvl.error = "passwords do not match"
-                                  progressBarSignup.isInvisible = true
-                              }*/
-                    }
-
-                    else -> {
-                        Log.d("TAG", "listenToChannels: No event received so far")
+        viewModel.isUserAddedFirestore.observe(viewLifecycleOwner, { it ->
+            binding.viewLoading.visible(it is Resource.Loading)
+            when (it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    // If user successfully added to firestore route to wallet page.
+                    if (it.value) {
+                        findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToWalletConnectionFragment())
                     }
                 }
+                is Resource.Failure -> {
 
+                }
             }
-        }
+        })
     }
 }

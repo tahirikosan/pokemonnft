@@ -1,6 +1,7 @@
 package com.tahirikosan.pokemonnft.data.repository
 
 import com.google.firebase.auth.FirebaseUser
+import com.tahirikosan.pokemonnft.data.remote.Resource
 
 
 interface BaseAuthRepository {
@@ -12,13 +13,13 @@ interface BaseAuthRepository {
     //we will use it won't matter since all will inherit from this class. So swapping
     //of repositories will be easy.
 
-    suspend fun signInWithEmailPassword(email:String , password:String): FirebaseUser?
+    suspend fun signInWithEmailPassword(email: String, password: String): Resource<FirebaseUser>
 
-    suspend fun signUpWithEmailPassword(email: String , password: String): FirebaseUser?
+    suspend fun signUpWithEmailPassword(email: String, password: String): Resource<FirebaseUser>
 
-    fun signOut() : FirebaseUser?
+    fun signOut()
 
-    fun getCurrentUser() : FirebaseUser?
+    suspend fun getCurrentUser(): Resource<FirebaseUser>
 
-    suspend fun sendResetPassword(email : String) : Boolean
+    suspend fun sendResetPassword(email: String): Resource<Boolean>
 }
