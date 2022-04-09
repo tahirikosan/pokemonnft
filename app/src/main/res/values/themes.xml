@@ -67,4 +67,12 @@
         <item name="android:textColor">@color/primaryColor</item>
         <item name="android:backgroundTint">@color/componentColor</item>
     </style>
+
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/componentColor</item>
+        <item name="android:textCursorDrawable">@color/componentColor</item>
+        <item name="android:backgroundTint">@color/componentColor</item>
+        <item name="android:textColorHint">@color/componentColor</item>
+        <item name="android:maxLines">1</item>
+    </style>
 </resources>

@@ -37,10 +37,10 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(FragmentAuthBinding::infl
                 viewModel.signInUser(email, password)
             }
 
-            btnRegister.setOnClickListener {
+            tvRegister.setOnClickListener {
                 findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToRegisterFragment())
             }
-            btnResetPassword.setOnClickListener {
+            tvResetPassword.setOnClickListener {
                 findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToResetPasswordFragment())
             }
         }
