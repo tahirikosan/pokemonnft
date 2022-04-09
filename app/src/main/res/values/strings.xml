@@ -9,4 +9,5 @@
     <string name="signup_btn_text">Signup</string>
     <string name="login">Login</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="reset">Reset</string>
 </resources>
