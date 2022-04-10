@@ -43,6 +43,12 @@
         <action
             android:id="@+id/action_gameMenuFragment_to_shoppingFragment"
             app:destination="@id/shoppingFragment" />
+        <action
+            android:id="@+id/action_gameMenuFragment_to_authFragment"
+            app:destination="@id/authFragment"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/authFragment"/>
     </fragment>
     <fragment
         android:id="@+id/registerFragment"

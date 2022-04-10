@@ -95,11 +95,15 @@ class FirestoreDatabaseImpl @Inject constructor(
     }
 
     override suspend fun getUserPokemonIds(): List<Int> {
+        var pokemonIds = listOf<Int>()
         return try {
             firestore.collection("users")
                 .document(FirebaseAuth.getInstance().currentUser?.uid!!)
                 .get()
-                .await().toUser()!!.pokemons!!
+                .await().toUser()!!.pokemons?.let {
+                    pokemonIds = it
+                }
+            pokemonIds
         } catch (e: Exception) {
             e.printStackTrace()
             throw e

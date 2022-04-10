@@ -8,7 +8,6 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class User(
     var coin: Int? = null,
-    var experience: Int? = null,
     var pvp: Int? = null,
     var userId: String? = null,
     var pokemons: List<Int>?=null,

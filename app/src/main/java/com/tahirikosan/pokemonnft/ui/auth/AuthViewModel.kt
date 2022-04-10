@@ -27,8 +27,11 @@ class AuthViewModel @Inject constructor(
     //create the auth state livedata object that will be passed to
     //the home fragment and shall be used to control the ui i.e show authentication state
     //control behaviour of sign in and sign up button
-    private val _firebaseUser = MutableLiveData<Resource<FirebaseUser>>()
+    private val _firebaseUser = MutableLiveData<Resource<FirebaseUser?>>()
     val currentUser get() = _firebaseUser
+
+    private val _signinResponse = MutableLiveData<Resource<FirebaseUser?>>()
+    val signinResponse get() = _signinResponse
 
     // After sigup auth then add user to firestore.
     private val _isUserAddedFirestore = MutableLiveData<Resource<Boolean>>()
@@ -38,10 +41,16 @@ class AuthViewModel @Inject constructor(
     private val _passwordResetSuccess = MutableLiveData<Resource<Boolean>>()
     val passwordResetSuccess get() = _passwordResetSuccess
 
+
+    fun getCurrentUser() = viewModelScope.launch {
+        _firebaseUser.value = Resource.Loading
+        _firebaseUser.value = repository.getCurrentUser()
+    }
+
     //validate all fields first before performing any sign in operations
     fun signInUser(email: String, password: String) = viewModelScope.launch {
-        _firebaseUser.value = Resource.Loading
-        _firebaseUser.value = repository.signInWithEmailPassword(email, password)
+        _signinResponse.value = Resource.Loading
+        _signinResponse.value = repository.signInWithEmailPassword(email, password)
     }
 
     //validate all fields before performing any sign up operations
@@ -69,8 +78,5 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-    fun getCurrentUser() = viewModelScope.launch {
-        _firebaseUser.value = Resource.Loading
-        _firebaseUser.value = repository.getCurrentUser()
-    }
+
 }

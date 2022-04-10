@@ -10,6 +10,9 @@ import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.databinding.FragmentAuthBinding
+import com.tahirikosan.pokemonnft.utils.Utils.closeKeyboard
+import com.tahirikosan.pokemonnft.utils.Utils.handleApiError
+import com.tahirikosan.pokemonnft.utils.Utils.showToastShort
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -24,17 +27,19 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(FragmentAuthBinding::infl
         super.onViewCreated(view, savedInstanceState)
         handleClicks()
         getUser()
-        registerObserver()
-        listenToChannels()
+        observe()
     }
 
     private fun handleClicks() {
         with(binding) {
             btnLogin.setOnClickListener {
-                //  progressBarSignin.isVisible = true
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
-                viewModel.signInUser(email, password)
+                if (validateInputs(email, password)) {
+                    viewLoading.visible(true)
+                    viewModel.signInUser(email, password)
+                    closeKeyboard(requireActivity())
+                }
             }
 
             tvRegister.setOnClickListener {
@@ -50,22 +55,32 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(FragmentAuthBinding::infl
         viewModel.getCurrentUser()
     }
 
-    private fun listenToChannels() {
-
-    }
-
-    private fun registerObserver() {
-        viewModel.currentUser.observe(viewLifecycleOwner, { it ->
+    private fun observe() {
+        viewModel.currentUser.observe(viewLifecycleOwner, {
             binding.viewLoading.visible(it is Resource.Loading)
             when (it) {
                 is Resource.Loading -> {
                 }
                 is Resource.Success -> {
-                    routeToWalletConnectionPage()
+                    it.value?.let {
+                        routeToWalletConnectionPage()
+                    }
                 }
                 is Resource.Failure -> {
-
                 }
+            }
+        })
+        viewModel.signinResponse.observe(viewLifecycleOwner, {
+            binding.viewLoading.visible(it is Resource.Loading)
+            when (it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    it.value?.let {
+                        routeToWalletConnectionPage()
+                    }
+                }
+                is Resource.Failure -> handleApiError(it)
             }
         })
     }
@@ -75,5 +90,13 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(FragmentAuthBinding::infl
             findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToGameMenuFragment())
         else
             findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToWalletConnectionFragment())
+    }
+
+    private fun validateInputs(email: String, password: String): Boolean {
+        if (email.isEmpty() || password.isEmpty()) {
+            showToastShort(requireContext(), "Fields can not be empty!")
+            return false
+        }
+        return true
     }
 }

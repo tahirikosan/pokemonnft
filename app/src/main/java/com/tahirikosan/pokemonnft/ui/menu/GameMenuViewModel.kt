@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tahirikosan.pokemonnft.data.remote.Resource
+import com.tahirikosan.pokemonnft.data.repository.AuthRepository
 import com.tahirikosan.pokemonnft.data.repository.FirestoreRepository
 import com.tahirikosan.pokemonnft.data.repository.NFTRepository
 import com.tahirikosan.pokemonnft.data.repository.PokedexRepository
@@ -18,7 +19,8 @@ import javax.inject.Inject
 class GameMenuViewModel @Inject constructor(
     private val repository: NFTRepository,
     private val firestoreRepository: FirestoreRepository,
-    private val pokedexRepository: PokedexRepository
+    private val pokedexRepository: PokedexRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
     // These are nft pokemons.Comes from my service.
@@ -49,6 +51,10 @@ class GameMenuViewModel @Inject constructor(
         pokemonIds.forEach {
             _pokedexPokemonResponse.value = pokedexRepository.getPokemonDetailById(it)
         }
+    }
+
+    fun signout(){
+        authRepository.signOut()
     }
 
 }

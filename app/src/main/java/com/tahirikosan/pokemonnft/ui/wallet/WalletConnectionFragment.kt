@@ -24,7 +24,6 @@ import javax.crypto.spec.IvParameterSpec
 class WalletConnectionFragment :
     BaseFragment<FragmentWalletConnectionBinding>(FragmentWalletConnectionBinding::inflate) {
 
-    private val TEST_MNEMONIC = ""
     private val viewModel by viewModels<WalletConnectionViewModel>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

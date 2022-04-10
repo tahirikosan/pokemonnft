@@ -24,7 +24,7 @@ import timber.log.Timber
 class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuBinding::inflate) {
 
     private lateinit var nftPokemons: List<NFTPokemon>
-    private var selectedPokemon: PokemonModel?=null
+    private var selectedPokemon: PokemonModel? = null
     private var pokemonAdapter: PokemonAdapter? = null
     private var nftPokemonAdapter: NFTPokemonAdapter? = null
     private val viewModel: GameMenuViewModel by viewModels()
@@ -58,15 +58,20 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
             }
 
             ivFight.setOnClickListener {
-                if(selectedPokemon != null){
+                if (selectedPokemon != null) {
                     findNavController().navigate(
                         GameMenuFragmentDirections.actionGameMenuFragmentToQueueFragment(
                             selectedPokemon!!
                         )
                     )
-                }else{
+                } else {
                     showToastShort(requireContext(), "Please select a pokemon to fight!")
                 }
+            }
+
+            btnSignout.setOnClickListener {
+                signout()
+                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToAuthFragment())
             }
         }
     }
@@ -139,5 +144,9 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
             binding.ivFight.enable(true)
         }
         binding.recyclerViewPokemons.adapter = pokemonAdapter
+    }
+
+    private fun signout() {
+        viewModel.signout()
     }
 }

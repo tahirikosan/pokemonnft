@@ -12,11 +12,11 @@ interface FirebaseAuthenticator {
 
     suspend fun signUpWithEmailPassword(email:String , password:String) : FirebaseUser
 
-    suspend fun signInWithEmailPassword(email: String , password: String):FirebaseUser
+    suspend fun signInWithEmailPassword(email: String , password: String):FirebaseUser?
 
     fun signOut()
 
-    suspend fun getUser() : FirebaseUser
+    suspend fun getUser() : FirebaseUser?
 
     suspend fun sendPasswordReset(email :String): Boolean
 }

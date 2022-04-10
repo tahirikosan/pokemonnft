@@ -1,5 +1,6 @@
 package com.tahirikosan.pokemonnft.data.remote
 
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
@@ -20,17 +21,27 @@ interface SafeApiCall {
             } catch (throwable: Throwable) {
                 when (throwable) {
                     is HttpException -> {
-                        Resource.Failure(false, throwable.code(), throwable.response()?.errorBody())
+                        Resource.Failure(
+                            errorCode = throwable.code(),
+                            errorBody = throwable.response()?.errorBody()
+                        )
                     }
                     is FirebaseFirestoreException -> {
                         Resource.Failure(
-                            false,
-                            throwable.code.value(),
-                            createResponseBody(throwable.message.toString())
+                            isFirebaseError = true,
+                            errorMessage = throwable.message
+                        )
+                    }
+                    is FirebaseAuthException -> {
+                        Resource.Failure(
+                            isFirebaseError = true,
+                            errorMessage = throwable.message
                         )
                     }
                     else -> {
-                        Resource.Failure(true, null, null)
+                        Resource.Failure(
+                            isNetworkError = true,
+                        )
                     }
                 }
             }

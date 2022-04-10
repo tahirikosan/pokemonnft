@@ -15,7 +15,7 @@ class AuthRepository @Inject constructor(
     override suspend fun signInWithEmailPassword(
         email: String,
         password: String
-    ): Resource<FirebaseUser> = safeApiCall {
+    ): Resource<FirebaseUser?> = safeApiCall {
         authenticator.signInWithEmailPassword(email, password)
     }
 
@@ -31,7 +31,7 @@ class AuthRepository @Inject constructor(
         authenticator.signOut()
     }
 
-    override suspend fun getCurrentUser(): Resource<FirebaseUser> = safeApiCall {
+    override suspend fun getCurrentUser(): Resource<FirebaseUser?> = safeApiCall {
         authenticator.getUser()
     }
 

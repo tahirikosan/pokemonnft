@@ -1,5 +1,6 @@
 package com.tahirikosan.pokemonnft.data.remote
 
+import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
@@ -18,10 +19,11 @@ class FirebaseAuthenticatorImpl : FirebaseAuthenticator {
         }
     }
 
-    override suspend fun signInWithEmailPassword(email: String, password: String): FirebaseUser {
+    override suspend fun signInWithEmailPassword(email: String, password: String): FirebaseUser? {
         try {
-            Firebase.auth.signInWithEmailAndPassword(email, password).await()
-            return Firebase.auth.currentUser!!
+            val result: AuthResult =
+                Firebase.auth.signInWithEmailAndPassword(email, password).await()
+            return result.user
         } catch (e: Exception) {
             e.printStackTrace()
             throw  e
@@ -32,12 +34,12 @@ class FirebaseAuthenticatorImpl : FirebaseAuthenticator {
         Firebase.auth.signOut()
     }
 
-    override suspend fun getUser(): FirebaseUser {
+    override suspend fun getUser(): FirebaseUser? {
         try {
             return Firebase.auth.currentUser!!
         } catch (e: Exception) {
             e.printStackTrace()
-            throw  e
+            throw e
         }
     }
 

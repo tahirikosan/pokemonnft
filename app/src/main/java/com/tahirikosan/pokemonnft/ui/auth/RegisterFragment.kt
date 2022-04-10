@@ -42,7 +42,9 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 is Resource.Loading -> {
                 }
                 is Resource.Success -> {
-                    viewModel.addUserToFirestore(userId = it.value.uid)
+                    it.value?.let {
+                        viewModel.addUserToFirestore(userId = it.uid)
+                    }
                 }
                 is Resource.Failure -> {
 
