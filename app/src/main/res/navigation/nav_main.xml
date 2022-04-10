@@ -44,11 +44,8 @@
             android:id="@+id/action_gameMenuFragment_to_shoppingFragment"
             app:destination="@id/shoppingFragment" />
         <action
-            android:id="@+id/action_gameMenuFragment_to_authFragment"
-            app:destination="@id/authFragment"
-            app:launchSingleTop="true"
-            app:popUpToInclusive="true"
-            app:popUpTo="@id/authFragment"/>
+            android:id="@+id/action_gameMenuFragment_to_profileFragment"
+            app:destination="@id/profileFragment" />
     </fragment>
     <fragment
         android:id="@+id/registerFragment"
@@ -135,5 +132,19 @@
         <argument
             android:name="pokemonId"
             app:argType="integer" />
+    </fragment>
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.tahirikosan.pokemonnft.ui.profile.ProfileFragment"
+        android:label="ProfileFragment">
+        <action
+            android:id="@+id/action_profileFragment_to_authFragment"
+            app:destination="@id/authFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/authFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_profileFragment_to_walletConnectionFragment"
+            app:destination="@id/walletConnectionFragment" />
     </fragment>
 </navigation>

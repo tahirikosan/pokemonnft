@@ -1,6 +1,7 @@
 package com.tahirikosan.pokemonnft.ui.mint
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.fragment.app.viewModels
 import com.daimajia.androidanimations.library.Techniques
@@ -29,6 +30,7 @@ class MintingFragment : BaseFragment<FragmentMintingBinding>(FragmentMintingBind
         set()
         observe()
         viewModel.getUserInfo()
+        Timber.d(userPreferences.getMnemonic().phrase)
         //viewModel.getMintedPokemon("0xd2638055075e9018c27877deff3cfa033abecd41d19cdfd80bd30d8e34f9eb94")
         handleClicks()
     }

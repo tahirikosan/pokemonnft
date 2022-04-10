@@ -69,9 +69,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
             }
 
-            btnSignout.setOnClickListener {
-                signout()
-                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToAuthFragment())
+            ivGoToProfile.setOnClickListener {
+                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToProfileFragment())
             }
         }
     }
@@ -144,9 +143,5 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
             binding.ivFight.enable(true)
         }
         binding.recyclerViewPokemons.adapter = pokemonAdapter
-    }
-
-    private fun signout() {
-        viewModel.signout()
     }
 }

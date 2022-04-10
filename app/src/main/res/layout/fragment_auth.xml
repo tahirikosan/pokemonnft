@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:hint="@string/email"
+            android:imeOptions="actionNext"
             android:inputType="textEmailAddress" />
 
         <EditText
@@ -40,6 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="12dp"
             android:hint="@string/password"
+            android:imeOptions="actionDone"
+            android:inputType="textPassword"
             android:textColorHint="@color/componentColor" />
 
         <TextView

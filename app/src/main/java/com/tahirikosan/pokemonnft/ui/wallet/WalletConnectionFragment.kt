@@ -56,8 +56,6 @@ class WalletConnectionFragment :
                 }
                 is Resource.Success -> {
                     Timber.d(it.value.toString())
-                    userPreferences.savePrivateKey(it.value.privateKey)
-                    userPreferences.savePublicKey(it.value.publicKey)
                     binding.etMnemonic.setText(it.value.mnemonic.phrase)
                     //routeToGameMenuPage()
                 }
@@ -75,6 +73,9 @@ class WalletConnectionFragment :
                 }
                 is Resource.Success -> {
                     Timber.d(it.value.toString())
+                    userPreferences.savePrivateKey(it.value.privateKey)
+                    userPreferences.savePublicKey(it.value.publicKey)
+                    userPreferences.saveMnemonic(it.value.mnemonic)
                     routeToGameMenuPage()
                 }
                 is Resource.Failure -> {

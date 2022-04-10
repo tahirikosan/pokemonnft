@@ -18,68 +18,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/layout_user_info"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginVertical="12dp"
-                android:background="@color/secondaryColor"
-                android:orientation="horizontal"
-                android:padding="12dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AttributeTitleTextStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="Coin" />
-
-                    <TextView
-                        android:id="@+id/tv_coin"
-                        style="@style/AttributeTextStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="10" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/AttributeTitleTextStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="PVP" />
-
-                    <TextView
-                        android:id="@+id/tv_hp"
-                        style="@style/AttributeTextStyle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="10" />
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/btn_signout"
-                    style="@style/DefaultButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign out" />
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/iv_go_to_profile"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_margin="12dp"
+                android:src="@drawable/ic_pokeball" />
 
 
             <TextView

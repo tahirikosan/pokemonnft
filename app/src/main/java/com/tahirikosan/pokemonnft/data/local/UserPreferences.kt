@@ -15,6 +15,8 @@ import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 
 import androidx.security.crypto.MasterKeys
+import com.google.gson.Gson
+import com.tahirikosan.pokemonnft.data.response.wallet.Mnemonic
 import java.security.PrivateKey
 
 
@@ -47,7 +49,21 @@ class UserPreferences @Inject constructor(@ApplicationContext context: Context) 
         get() = sharedPreferences.getString(REFRESH_TOKEN, null)
 
 
-    fun savePrivateKey(privateKey: String) {
+    fun getMnemonic(): Mnemonic {
+        val str = sharedPreferences.getString(MNEMONIC, null)
+        return Gson().fromJson(
+            str,
+            Mnemonic::class.java
+        )
+    }
+
+    fun saveMnemonic(mnemonic: Mnemonic) {
+        val mnemonicStr = Gson().toJson(mnemonic)
+        editor.putString(MNEMONIC, mnemonicStr)
+        editor.apply()
+    }
+
+    fun savePrivateKey(mnemonic: String) {
         editor.putString(PRIVATE_KEY, privateKey)
         editor.apply()
     }
@@ -66,7 +82,6 @@ class UserPreferences @Inject constructor(@ApplicationContext context: Context) 
     fun isPrivateKeyExist(): Boolean = sharedPreferences.contains(PRIVATE_KEY)
 
 
-
     fun clear() {
     }
 
@@ -76,6 +91,7 @@ class UserPreferences @Inject constructor(@ApplicationContext context: Context) 
         private val USER_TYPE = "key_user_type"
         private val IS_ACCOUNT_VERIFIED = "is_account_verified"
         private val PRIVATE_KEY = "private_key"
+        private val MNEMONIC = "mnenmonic"
         private val PUBLIC_KEY = "public_key"
     }
 }
