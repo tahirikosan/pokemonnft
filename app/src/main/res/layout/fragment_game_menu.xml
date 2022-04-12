@@ -23,7 +23,7 @@
                 android:layout_width="64dp"
                 android:layout_height="64dp"
                 android:layout_margin="12dp"
-                android:src="@drawable/ic_pokeball" />
+                android:src="@drawable/ic_profile" />
 
 
             <TextView
@@ -46,6 +46,13 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:listitem="@layout/item_pokemon_card" />
 
+            <TextView
+                style="@style/TitleSecondaryStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/nft_pokemons" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_nft_pokemons"

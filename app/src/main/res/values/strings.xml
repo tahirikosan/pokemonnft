@@ -14,4 +14,5 @@
     <string name="create_wallet">Create wallet</string>
     <string name="public_key">Public Key</string>
     <string name="mnemonic">Mnemonic</string>
+    <string name="nft_pokemons">NFT Pokemons</string>
 </resources>
