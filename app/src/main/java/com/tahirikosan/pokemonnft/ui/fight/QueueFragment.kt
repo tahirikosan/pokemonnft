@@ -12,6 +12,7 @@ import com.tahirikosan.pokemonnft.R
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.response.fight.Room
 import com.tahirikosan.pokemonnft.databinding.FragmentQueueBinding
+import com.tahirikosan.pokemonnft.enum.PokemonStatEnum
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_QUEUE
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
@@ -23,7 +24,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
     private lateinit var firestore: FirebaseFirestore
     private lateinit var queueRef: CollectionReference
     private lateinit var roomsRef: CollectionReference
-    private lateinit var myUserId: String
+    private lateinit var myPlayerId: String
     private var players: ArrayList<String> = arrayListOf()
     private lateinit var roomListener: ListenerRegistration
 
@@ -37,14 +38,14 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        myUserId = FirebaseAuth.getInstance().currentUser!!.uid
+        myPlayerId = FirebaseAuth.getInstance().currentUser!!.uid
         firestore = FirebaseFirestore.getInstance()
 
         // Write a message to the database
         // Write a message to the database
         queueRef = firestore.collection(COLLECTION_QUEUE)
         roomsRef = firestore.collection(COLLECTION_ROOMS)
-        addUserToQueue(userId = myUserId)
+        addPlayerToQueue(myPlayerId)
 
         listenChanges()
 
@@ -55,24 +56,31 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
     override fun onStop() {
         super.onStop()
-        removeUserFromQueue(userId = myUserId)
-        requireActivity().onBackPressed()
+        removeUserFromQueue(playerId = myPlayerId)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        removeUserFromQueue(userId = myUserId)
-        requireActivity().onBackPressed()
+        removeUserFromQueue(playerId = myPlayerId)
     }
 
-    private fun addUserToQueue(userId: String) {
+    private fun addPlayerToQueue(playerId: String) {
+        val playerMap = hashMapOf(
+            FirebaseUtils.playerId to playerId,
+            FirebaseUtils.pokemonName to selectedPokemon.name,
+            FirebaseUtils.hp to selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value,
+            FirebaseUtils.ap to selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value,
+            FirebaseUtils.dp to selectedPokemon.attributes!![PokemonStatEnum.DEFENCE_STAT.index].value,
+            FirebaseUtils.sp to selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value,
+            FirebaseUtils.imageUrl to selectedPokemon.image,
+        )
         queueRef.document(QUEUE_DOC_IC)
-            .update(field_players, FieldValue.arrayUnion(userId))
+            .update("${field_players}.${playerId}", playerMap)
     }
 
-    private fun removeUserFromQueue(userId: String) {
+    private fun removeUserFromQueue(playerId: String) {
         queueRef.document(QUEUE_DOC_IC)
-            .update(field_players, FieldValue.arrayRemove(userId))
+            .update("${field_players}.${playerId}", FieldValue.delete())
             .addOnSuccessListener {
                 //binding.joinButton.visible(true)
             }
@@ -81,12 +89,12 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
     private fun routeUserToFightPage(roomId: String) {
         val enemyId = players.first {
-            it != myUserId
+            it != myPlayerId
         }
         val bundle: Bundle = bundleOf(
             "roomId" to roomId,
             "selectedPokemon" to selectedPokemon,
-            "userId" to myUserId,
+            "userId" to myPlayerId,
             "enemyId" to enemyId
         )
         findNavController().navigate(R.id.action_queueFragment_to_fightFragment, bundle)
@@ -96,7 +104,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
     private fun listenChanges() {
         // Listen game room and join it.
-        roomListener = roomsRef.whereArrayContains(field_players, myUserId)
+        roomListener = roomsRef.whereArrayContains(field_players, myPlayerId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TAG", "Listen failed.", e)

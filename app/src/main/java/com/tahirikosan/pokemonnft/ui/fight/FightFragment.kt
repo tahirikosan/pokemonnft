@@ -28,7 +28,6 @@ import com.tahirikosan.pokemonnft.utils.FirebaseUtils.sp
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
-import com.tahirikosan.pokemonnft.utils.Utils.showToastLong
 import com.tahirikosan.pokemonnft.utils.Utils.showToastShort
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -68,8 +67,6 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         roomsRef = firestore.collection(COLLECTION_ROOMS)
         usersRef = firestore.collection(COLLECTION_USERS)
         setMyPokemonView()
-        setMyPokemonInfo()
-        setPlayerHp()
         listenChanges()
         Utils.showToastShort(requireContext(), selectedPokemon.name.toString() + "  " + roomId)
 
@@ -133,34 +130,6 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
-    // Sends selected pokemon info to firestore game room.
-    private fun setMyPokemonInfo() {
-        roomsRef.document(roomId)
-            .update(
-                mapOf(
-                    "$playersPokemons.${userId}" to hashMapOf(
-                        pokemonName to selectedPokemon.name,
-                        hp to selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value,
-                        ap to selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value,
-                        dp to selectedPokemon.attributes!![PokemonStatEnum.DEFENCE_STAT.index].value,
-                        sp to selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value,
-                        imageUrl to selectedPokemon.image,
-                    )
-                )
-            )
-    }
-
-
-    // Sends player hp to firestore game room.
-    private fun setPlayerHp() {
-        roomsRef.document(roomId)
-            .update(
-                mapOf(
-                    "$field_health.${userId}" to selectedPokemon.attributes!![PokemonStatEnum.HEALTH_STAT.index].value
-                )
-            )
-    }
-
     private fun attack() {
         // Hit enemy and decrease it's health point.
         val criticalChance = selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value!!
@@ -179,7 +148,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         // Get enemy health info.
         roomsRef.document(roomId).get().addOnSuccessListener {
             val room = it.toObject(Room::class.java)
-            var enemyHp = room!!.health!![enemyId]!!
+            var enemyHp = room!!.healths!![enemyId]!!
             setEnemyMaxHealthProgressOnce(enemyHp)
             // Decrease enemy hp with respect to user damage.
             enemyHp -= finalDamage
@@ -228,7 +197,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                 // Set enemy pokemon card view.
                 setEnemyPokemonView(room!!)
 
-                val myHp = room.health!![userId]!!
+                val myHp = room.healths!![userId]!!
                 // Set enemy hp view.
                 binding.progressMyHealth.progress = myHp
                 setMyMaxHealthProgressOnce(myHp)
