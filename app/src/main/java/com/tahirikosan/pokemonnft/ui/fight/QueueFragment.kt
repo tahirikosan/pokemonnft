@@ -53,9 +53,16 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+        removeUserFromQueue(userId = myUserId)
+        requireActivity().onBackPressed()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         removeUserFromQueue(userId = myUserId)
+        requireActivity().onBackPressed()
     }
 
     private fun addUserToQueue(userId: String) {
