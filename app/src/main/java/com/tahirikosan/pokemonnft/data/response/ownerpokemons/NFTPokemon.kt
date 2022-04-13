@@ -16,7 +16,6 @@ data class NFTPokemon(
     val id: Int? = null,
     val image: String? = null,
     val name: String? = null,
-    val rarity: String? = null,
     val tokenId: String? = null,
 ) : Parcelable {
     companion object {

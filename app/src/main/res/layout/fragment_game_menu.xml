@@ -34,6 +34,15 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/select_a_pokemon" />
 
+            <TextView
+                android:id="@+id/tv_pokemons_not_found"
+                style="@style/SubTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/buy_a_pokemon" />
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_pokemons"
                 android:layout_width="match_parent"
@@ -53,6 +62,15 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:text="@string/nft_pokemons" />
+
+            <TextView
+                android:id="@+id/tv_nft_pokemons_not_found"
+                style="@style/SubTitleStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:text="@string/mint_a_pokemon" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_view_nft_pokemons"

@@ -42,7 +42,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     override fun onStart() {
         super.onStart()
-        viewModel.getOwnerNFTPokemons("0x64644a2446572912b0257F7615f23825B1E52F99")
+        viewModel.getOwnerNFTPokemons("0xD33f5362E537A7e74547DD6a6C4601c98834b330")
         viewModel.getUserPokemonIds()
     }
 
@@ -85,6 +85,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 is Resource.Success -> {
                     Timber.d("Pokemons: " + it.value.toString())
                     nftPokemons = it.value.pokemons
+                    // Set warning message visibility
+                    binding.tvNftPokemonsNotFound.visible(nftPokemons.isEmpty())
                     setNFTPokemonRecyclerView()
                     binding.ivFight.visible(true)
                 }
@@ -101,6 +103,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
                 is Resource.Success -> {
                     Timber.d("Pokemons: " + it.value.toString())
+                    // Set warning message visibility
+                    binding.tvPokemonsNotFound.visible(it.value.isEmpty())
                     viewModel.getPokemonsByIds(it.value)
                 }
                 is Resource.Failure -> {

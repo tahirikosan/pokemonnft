@@ -15,4 +15,6 @@
     <string name="public_key">Public Key</string>
     <string name="mnemonic">Mnemonic</string>
     <string name="nft_pokemons">NFT Pokemons</string>
+    <string name="buy_a_pokemon"><u>Buy a Pokemon!</u></string>
+    <string name="mint_a_pokemon"><u>Mint a Pokemon!</u></string>
 </resources>
