@@ -15,7 +15,7 @@ import com.tahirikosan.pokemonnft.model.PokemonModel
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 
 class PokemonAdapter(
-    private val pokemonModels: ArrayList<PokemonModel>,
+    private val pokemonModels: List<PokemonModel>,
     val selectedPokemon: (PokemonModel) -> Unit
 ) :
     RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder>() {
@@ -34,11 +34,6 @@ class PokemonAdapter(
     }
 
     override fun getItemCount(): Int = pokemonModels.size
-
-    fun addPokemon(pokemonModel: PokemonModel) {
-        pokemonModels.add(pokemonModel)
-        notifyItemInserted(pokemonModels.size - 1)
-    }
 
     fun removeSelection() {
         val tmpPosition = selectedPokemonPosition

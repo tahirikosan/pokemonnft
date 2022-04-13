@@ -6,11 +6,10 @@ import com.tahirikosan.pokemonnft.data.local.UserPreferences
 import com.tahirikosan.pokemonnft.data.remote.FirebaseAuthenticatorImpl
 import com.tahirikosan.pokemonnft.data.remote.FirestoreDatabaseImpl
 import com.tahirikosan.pokemonnft.data.remote.RemoteDataSource
-import com.tahirikosan.pokemonnft.data.remote.api.FirebaseAuthenticator
-import com.tahirikosan.pokemonnft.data.remote.api.FirestoreDatabase
-import com.tahirikosan.pokemonnft.data.remote.api.NftApi
-import com.tahirikosan.pokemonnft.data.remote.api.PokedexApi
+import com.tahirikosan.pokemonnft.data.remote.api.*
 import com.tahirikosan.pokemonnft.data.repository.*
+import com.tahirikosan.pokemonnft.data.repository.pokemon.PokemonRepository
+import com.tahirikosan.pokemonnft.data.repository.pokemon.PokemonRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -52,6 +51,20 @@ class AppModule {
     fun providePokedexRepository(
         api: PokedexApi
     ): PokedexRepository = PokedexRepository(api)
+
+    @Singleton
+    @Provides
+    fun providePokemonApi(
+        remoteDataSource: RemoteDataSource,
+        @ApplicationContext context: Context
+    ): PokemonApi = remoteDataSource.buildApi(PokemonApi::class.java, context)
+
+
+    @Singleton
+    @Provides
+    fun providePokemonRepository(
+        pokemonApi: PokemonApi
+    ): PokemonRepository = PokemonRepositoryImpl(pokemonApi)
 
     //this means that anytime we need an authenticator Dagger will provide a Firebase authenticator.
     //in future if you want to swap out Firebase authentication for your own custom authenticator

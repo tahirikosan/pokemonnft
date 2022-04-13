@@ -31,7 +31,6 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setNormalPokemonRecyclerView()
         handleClicks()
     }
 
@@ -43,7 +42,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
     override fun onStart() {
         super.onStart()
         viewModel.getOwnerNFTPokemons("0xD33f5362E537A7e74547DD6a6C4601c98834b330")
-        viewModel.getUserPokemonIds()
+        viewModel.getCurrentUser()
     }
 
 
@@ -87,7 +86,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                     nftPokemons = it.value.pokemons
                     // Set warning message visibility
                     binding.tvNftPokemonsNotFound.visible(nftPokemons.isEmpty())
-                    setNFTPokemonRecyclerView()
+                    setNFTPokemonAdapter()
                     binding.ivFight.visible(true)
                 }
                 is Resource.Failure -> {
@@ -96,16 +95,14 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
             }
         })
 
-        viewModel.userPokemonIds.observe(this, {
+        viewModel.currentUser.observe(this, {
             binding.viewLoading.visible(it is Resource.Loading)
             when (it) {
                 is Resource.Loading -> {
                 }
                 is Resource.Success -> {
-                    Timber.d("Pokemons: " + it.value.toString())
-                    // Set warning message visibility
-                    binding.tvPokemonsNotFound.visible(it.value.isEmpty())
-                    viewModel.getPokemonsByIds(it.value)
+                    Timber.d("Userid: " + it.value.toString())
+                    viewModel.getOwnerPokemonsByOffset(it.value!!.uid, 0)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -114,13 +111,14 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
         })
 
         // Listen one pokemon detail and add it too pokemon list.
-        viewModel.pokedexPokemonResponse.observe(this, {
+        viewModel.ownerPokemonsResponse.observe(this, {
             when (it) {
                 is Resource.Loading -> {
                 }
                 is Resource.Success -> {
-                    val pokemon = it.value.toPokemonModel()
-                    pokemonAdapter?.addPokemon(pokemon)
+                    // Set warning message visibility
+                    binding.tvNftPokemonsNotFound.visible(it.value.pokemons.isEmpty())
+                    setNormalPokemonsAdapter(it.value.pokemons)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -129,7 +127,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
         })
     }
 
-    private fun setNFTPokemonRecyclerView() {
+    private fun setNFTPokemonAdapter() {
         nftPokemonAdapter = NFTPokemonAdapter(nftPokemons) { nftPokemon ->
             // Remove selection from normal pokemon adapter.
             pokemonAdapter?.removeSelection()
@@ -139,8 +137,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
         binding.recyclerViewNftPokemons.adapter = nftPokemonAdapter
     }
 
-    private fun setNormalPokemonRecyclerView() {
-        pokemonAdapter = PokemonAdapter(arrayListOf()) {
+    private fun setNormalPokemonsAdapter(pokemonModels: List<PokemonModel>) {
+        pokemonAdapter = PokemonAdapter(pokemonModels) {
             // Remove nft pokemon selection.
             nftPokemonAdapter?.removeSelection()
             selectedPokemon = it
