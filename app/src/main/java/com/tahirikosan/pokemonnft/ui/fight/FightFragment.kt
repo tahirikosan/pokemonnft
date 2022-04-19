@@ -1,6 +1,7 @@
 package com.tahirikosan.pokemonnft.ui.fight
 
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.View
 import androidx.navigation.fragment.findNavController
@@ -40,6 +41,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::inflate) {
     // Reduces pokemon damage.
     private val DAMAGE_REDUCER = 5
+    private val TIMER_ATTACK_INTERVAL: Long = 10000
 
     private lateinit var firestore: FirebaseFirestore
     private lateinit var roomsRef: CollectionReference
@@ -49,6 +51,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     // Sets one time in beginning of first round.
     private lateinit var initialTurn: String
+    private var currentTurn: String = ""
     private var isInitialTurnSet: Boolean = false
 
     private var isGameOver: Boolean = false
@@ -69,6 +72,21 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     }
     private val selectedPokemon by lazy {
         args.selectedPokemon
+    }
+
+    private var isTimerStarted = false
+    val timer = object : CountDownTimer(TIMER_ATTACK_INTERVAL, 1000) {
+        override fun onTick(millisUntilFinished: Long) {
+            binding.tvTimer.text = (millisUntilFinished / 1000).toString()
+        }
+
+        override fun onFinish() {
+            // At end of timer change turn to enemy.
+            if (currentTurn == userId) {
+                changeTurn(enemyId)
+            }
+            resetTimer()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -242,6 +260,12 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                     setMyMaxHealthProgressOnce(myHp)
                     setMyHealth(myHp)
 
+                    // Set current turn
+                    if (currentTurn != room.turn!!) {
+                        currentTurn = room.turn!!
+                        startTimer()
+                    }
+
                     // Enable attackBtn.
                     if (room.turn == userId) {
                         binding.attackBtn.enable(true)
@@ -377,6 +401,22 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                 setEnemyHealth(enemyFullHp)
                 setMyHealth(myFullHp)
             }
+    }
+
+    private fun startTimer() {
+        if (!isTimerStarted) {
+            timer.start()
+        }
+    }
+
+    private fun stopTimer() {
+        timer.cancel()
+        isTimerStarted = false
+    }
+
+    private fun resetTimer() {
+        stopTimer()
+        startTimer()
     }
 
     private fun routeToGameResults(isWon: Boolean) {
