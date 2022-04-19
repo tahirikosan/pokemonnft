@@ -21,7 +21,7 @@
         app:layout_constraintTop_toBottomOf="@id/enemyPokemonView">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progress_enemy_health"
+            android:id="@+id/enemy_health_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
@@ -62,7 +62,7 @@
         app:layout_constraintTop_toBottomOf="@id/myPokemonView">
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
-            android:id="@+id/progress_my_health"
+            android:id="@+id/my_health_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"

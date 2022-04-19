@@ -225,27 +225,27 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
     private fun setMyMaxHealthProgressOnce(maxHp: Int) {
         if (!myMaxHpAlreadySet) {
-            binding.progressMyHealth.max = maxHp
-            binding.progressMyHealth.progress = maxHp
+            binding.myHealthBar.max = maxHp
+            binding.myHealthBar.progress = maxHp
             myMaxHpAlreadySet = true
         }
     }
 
     private fun setMyHealth(newHp: Int){
-        binding.progressMyHealth.progress = newHp
+        binding.myHealthBar.progress = newHp
         binding.tvMyHealth.text = newHp.toString()
     }
 
     private fun setEnemyMaxHealthProgressOnce(maxHp: Int) {
         if (!enemyMaxHpAlreadySet) {
-            binding.progressEnemyHealth.max = maxHp
-            binding.progressEnemyHealth.progress = maxHp
+            binding.enemyHealthBar.max = maxHp
+            binding.enemyHealthBar.progress = maxHp
             enemyMaxHpAlreadySet = true
         }
     }
 
     private fun setEnemyHealth(newHp: Int){
-        binding.progressEnemyHealth.progress = newHp
+        binding.enemyHealthBar.progress = newHp
         binding.tvEnemyHealth.text = newHp.toString()
     }
 
