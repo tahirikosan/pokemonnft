@@ -13,5 +13,6 @@ data class Room(
     var playerTwo: String? = null,
     var players: ArrayList<String>? = null,
     var healths: Map<String, Int>? = null,
+    var scores: Map<String, Int>? = null,
     var playersPokemons: Map<String, PlayerPokemon>? = null,
 ) : Parcelable

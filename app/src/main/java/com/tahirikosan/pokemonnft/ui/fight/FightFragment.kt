@@ -8,6 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.google.firebase.firestore.*
 import com.tahirikosan.pokemonnft.base.BaseFragment
+import com.tahirikosan.pokemonnft.data.response.fight.PlayerPokemon
 import com.tahirikosan.pokemonnft.databinding.FragmentFightBinding
 import com.tahirikosan.pokemonnft.data.response.fight.Room
 import com.tahirikosan.pokemonnft.enum.PokemonStatEnum
@@ -17,8 +18,11 @@ import com.tahirikosan.pokemonnft.utils.FirebaseUtils.ap
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.dp
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_coin
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_health
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_initial_turn
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_pvp
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_round
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_score
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_turn
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.hp
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.imageUrl
@@ -43,10 +47,16 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     private val args: FightFragmentArgs by navArgs()
     private lateinit var roomListener: ListenerRegistration
 
+    // Sets one time in beginning of first round.
+    private lateinit var initialTurn: String
+    private var isInitialTurnSet: Boolean = false
+
     private var isGameOver: Boolean = false
     private var isLeftTheGame: Boolean = false
     private var myMaxHpAlreadySet: Boolean = false
     private var enemyMaxHpAlreadySet: Boolean = false
+
+    private lateinit var playersPokemons: Map<String, PlayerPokemon>
 
     private val userId by lazy {
         args.userId
@@ -134,7 +144,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         // Hit enemy and decrease it's health point.
         val criticalChance = selectedPokemon.attributes!![PokemonStatEnum.SPEED_STAT.index].value!!
         Log.d("CRIT Chance", criticalChance.toString())
-        val attack = selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value!! / DAMAGE_REDUCER
+        val attack =
+            selectedPokemon.attributes!![PokemonStatEnum.ATTACK_STAT.index].value!! / DAMAGE_REDUCER
         val randomValue = (1..100).random()
         var finalDamage = attack
         // If hit crit.
@@ -161,26 +172,42 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
                     // Set enemy hp view.
                     setEnemyHealth(enemyHp)
                     if (enemyHp == 0) {
-                        isGameOver = true
-                        youWon()
+                        youWonTheRound()
                     }
                     // After all, change attack turn.
-                    changeTurn()
+                    changeTurn(enemyId)
                 }
         }
     }
 
+    // Sets initial turn one time.
+    private fun setInitialTurn(initialTurn: String) {
+        if (!isInitialTurnSet) {
+            isInitialTurnSet = true
+            this.initialTurn = initialTurn
+        }
+    }
 
     // Changes attacker turn.
-    private fun changeTurn() {
+    private fun changeTurn(playerId: String) {
         // Change turn
         roomsRef.document(roomId)
-            .update(field_turn, enemyId)
+            .update(field_turn, playerId)
             .addOnSuccessListener {
                 binding.attackBtn.enable(false)
             }
             .addOnFailureListener {
             }
+    }
+
+    // Called when round changes. Decides next attacker.
+    private fun checkAndChangeTurn() {
+        // If my user has initial turn then give second round turn to enemy.(to be fair play)
+        if (initialTurn == userId) {
+            changeTurn(enemyId)
+        } else {
+            changeTurn(userId)
+        }
     }
 
     // Listen room field changes like round, turn, health etc.
@@ -193,29 +220,32 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             if (snapshot != null && snapshot.exists()) {
                 Log.d("TAG", "Current data: ${snapshot.data}")
                 val room = snapshot.toObject(Room::class.java)
+                room?.let { room ->
+                    playersPokemons = room.playersPokemons!!
 
-                // Set enemy pokemon card view.
-                setEnemyPokemonView(room!!)
+                    setInitialTurn(room.turn!!)
 
-                val myHp = room.healths!![userId]!!
-                // Set enemy hp view.
-                setMyMaxHealthProgressOnce(myHp)
-                setMyHealth(myHp)
-                // Check if your hp is zero. That means you lose.
-                if (myHp == 0) {
-                    isGameOver = true
-                    youLose()
-                }
+                    // Check if enemy left the game.
+                    checkIfEnemyLeftTheRoom(roomPLayersSize = room.players!!.size)
+                    checkIfGameOver(room)
 
-                if (room.turn == userId) {
-                    binding.attackBtn.enable(true)
-                }
+                    // Set Rounds view.
+                    setRoundView(round = room.round!!)
 
-                // Check if enemy left the game.
-                if (room.players!!.size == 1) {
-                    // That means other user left the game. So you won
-                    isGameOver = true
-                    youWon()
+                    // Set enemy pokemon card view.
+                    setEnemyPokemonView(room)
+                    val enemyHp = room.healths!![enemyId]!!
+                    setEnemyHealth(enemyHp)
+
+                    val myHp = room.healths!![userId]!!
+                    // Set enemy hp view.
+                    setMyMaxHealthProgressOnce(myHp)
+                    setMyHealth(myHp)
+
+                    // Enable attackBtn.
+                    if (room.turn == userId) {
+                        binding.attackBtn.enable(true)
+                    }
                 }
             } else {
                 Log.d("TAG", "Current data: null")
@@ -231,7 +261,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
-    private fun setMyHealth(newHp: Int){
+    private fun setMyHealth(newHp: Int) {
         binding.myHealthBar.progress = newHp
         binding.tvMyHealth.text = newHp.toString()
     }
@@ -244,17 +274,53 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
-    private fun setEnemyHealth(newHp: Int){
+    private fun setEnemyHealth(newHp: Int) {
         binding.enemyHealthBar.progress = newHp
         binding.tvEnemyHealth.text = newHp.toString()
     }
 
+    private fun setRoundView(round: Int) {
+        binding.tvRound.text = "Round $round"
+    }
+
+    // My player won the current round, update his score in the room.
+    private fun youWonTheRound() {
+        // Then update the enemyHp.
+        roomsRef.document(roomId)
+            .update(
+                "$field_score.${userId}",
+                FieldValue.increment(1),
+                "$field_round",
+                FieldValue.increment(1)
+            ).addOnSuccessListener {
+                // Reset room.
+                resetRoom()
+                // After all, change attack turn.
+                checkAndChangeTurn()
+            }
+    }
+
+    // Checks users scores and defines the winner
+    private fun checkIfGameOver(room: Room) {
+        // Check enemy score.
+        val myScore = room.scores!![userId]
+        val enemyScore = room.scores!![enemyId]
+        if (enemyScore == 2 && !isGameOver) {
+            isGameOver = true
+            youLose()
+        }
+        if (myScore == 2 && !isGameOver) {
+            isGameOver = true
+            youWon()
+        }
+    }
+
     private fun youWon() {
+        deleteRoom()
         usersRef.document(userId)
             .update(
                 field_coin, FieldValue.increment(50), field_pvp, FieldValue.increment(10)
             ).addOnSuccessListener {
-                deleteRoom()
                 routeToGameResults(isWon = true)
             }
             .addOnFailureListener { e ->
@@ -263,11 +329,11 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     }
 
     private fun youLose() {
+        deleteRoom()
         usersRef.document(userId)
             .update(
                 field_pvp, FieldValue.increment(-10)
             ).addOnSuccessListener {
-                deleteRoom()
                 routeToGameResults(isWon = false)
             }
     }
@@ -283,8 +349,34 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             )
     }
 
+    private fun checkIfEnemyLeftTheRoom(roomPLayersSize: Int) {
+        if (roomPLayersSize == 1 && !isGameOver) {
+            // That means other user left the game. So you won
+            isGameOver = true
+            youWon()
+        }
+    }
+
     private fun deleteRoom() {
         roomsRef.document(roomId).delete()
+    }
+
+    private fun resetRoom() {
+        val enemyFullHp = playersPokemons[enemyId]!!.hp!!
+        val myFullHp = playersPokemons[userId]!!.hp!!
+        // First update user and enemy health on firestore.
+        roomsRef.document(roomId)
+            .update(
+                "$field_health.$enemyId",
+                enemyFullHp,
+                "$field_health.$userId",
+                myFullHp
+            )
+            .addOnSuccessListener {
+                // Set enemy hp view.
+                setEnemyHealth(enemyFullHp)
+                setMyHealth(myFullHp)
+            }
     }
 
     private fun routeToGameResults(isWon: Boolean) {

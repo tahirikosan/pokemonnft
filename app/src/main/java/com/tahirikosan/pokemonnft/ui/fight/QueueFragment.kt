@@ -18,6 +18,7 @@ import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_QUEUE
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.QUEUE_DOC_IC
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
+import com.tahirikosan.pokemonnft.utils.Utils
 
 class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::inflate) {
 
@@ -40,6 +41,9 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
         myPlayerId = FirebaseAuth.getInstance().currentUser!!.uid
         firestore = FirebaseFirestore.getInstance()
+        firestore.firestoreSettings = FirebaseFirestoreSettings.Builder()
+            .setPersistenceEnabled(false)
+            .build()
 
         // Write a message to the database
         // Write a message to the database
@@ -75,7 +79,12 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
             FirebaseUtils.imageUrl to selectedPokemon.image,
         )
         queueRef.document(QUEUE_DOC_IC)
-            .update("${field_players}.${playerId}", playerMap)
+            .update("${field_players}.${playerId}", playerMap).addOnSuccessListener {
+                Utils.showToastShort(requireContext(), "added to queue")
+            }.addOnFailureListener {
+                it.printStackTrace()
+                Utils.showToastShort(requireContext(), it.message.toString())
+            }
     }
 
     private fun removeUserFromQueue(playerId: String) {
