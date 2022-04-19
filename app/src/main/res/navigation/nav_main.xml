@@ -88,7 +88,8 @@
             app:argType="com.tahirikosan.pokemonnft.model.PokemonModel" />
         <action
             android:id="@+id/action_fightFragment_to_fightResultFragment"
-            app:destination="@id/fightResultFragment" />
+            app:destination="@id/fightResultFragment"
+            app:popUpTo="@id/gameMenuFragment"/>
         <action
             android:id="@+id/action_fightFragment_to_gameMenuFragment"
             app:destination="@id/gameMenuFragment" />

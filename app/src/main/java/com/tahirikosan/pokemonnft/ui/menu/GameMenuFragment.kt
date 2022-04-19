@@ -22,9 +22,7 @@ import timber.log.Timber
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.Toast
-
-
-
+import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
 
 
 @AndroidEntryPoint
@@ -44,6 +42,10 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
         handleClicks()
         setNormalPokemonsAdapter()
         listenNestedScrollView()
+
+        onBackPressed {
+
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

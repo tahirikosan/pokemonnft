@@ -19,11 +19,15 @@ class FightResultFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if(isWon){
-            binding.resultText.text = "YOU HAVE WON!"
-        }else{
-            binding.resultText.text = "YOU HAVE LOST!"
+        if (isWon) {
+            binding.resultText.text = "YOU WIN!"
+        } else {
+            binding.resultText.text = "YOU LOSE!"
 
+        }
+
+        binding.btnGoToMenu.setOnClickListener {
+            routeToGameMenu()
         }
 
         onBackPressed {
