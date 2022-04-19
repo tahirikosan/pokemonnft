@@ -15,7 +15,7 @@ import com.tahirikosan.pokemonnft.model.PokemonModel
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 
 class PokemonAdapter(
-    private val pokemonModels: List<PokemonModel>,
+    private val pokemonModels: ArrayList<PokemonModel>,
     val selectedPokemon: (PokemonModel) -> Unit
 ) :
     RecyclerView.Adapter<PokemonAdapter.PokemonViewHolder>() {
@@ -39,6 +39,11 @@ class PokemonAdapter(
         val tmpPosition = selectedPokemonPosition
         selectedPokemonPosition = -1
         notifyItemChanged(tmpPosition)
+    }
+
+    fun addNewPokemons(pokemons: List<PokemonModel>){
+        pokemonModels.addAll(pokemons)
+        notifyDataSetChanged()
     }
 
     inner class PokemonViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

@@ -159,7 +159,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             roomsRef.document(roomId)
                 .update("$field_health.${enemyId}", enemyHp).addOnSuccessListener {
                     // Set enemy hp view.
-                    binding.progressEnemyHealth.progress = enemyHp
+                    setEnemyHealth(enemyHp)
                     if (enemyHp == 0) {
                         isGameOver = true
                         youWon()
@@ -199,8 +199,8 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
 
                 val myHp = room.healths!![userId]!!
                 // Set enemy hp view.
-                binding.progressMyHealth.progress = myHp
                 setMyMaxHealthProgressOnce(myHp)
+                setMyHealth(myHp)
                 // Check if your hp is zero. That means you lose.
                 if (myHp == 0) {
                     isGameOver = true
@@ -231,6 +231,11 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
+    private fun setMyHealth(newHp: Int){
+        binding.progressMyHealth.progress = newHp
+        binding.tvMyHealth.text = newHp.toString()
+    }
+
     private fun setEnemyMaxHealthProgressOnce(maxHp: Int) {
         if (!enemyMaxHpAlreadySet) {
             binding.progressEnemyHealth.max = maxHp
@@ -239,6 +244,10 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         }
     }
 
+    private fun setEnemyHealth(newHp: Int){
+        binding.progressEnemyHealth.progress = newHp
+        binding.tvEnemyHealth.text = newHp.toString()
+    }
 
     private fun youWon() {
         usersRef.document(userId)

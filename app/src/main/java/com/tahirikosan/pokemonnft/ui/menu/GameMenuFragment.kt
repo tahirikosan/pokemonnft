@@ -19,19 +19,31 @@ import com.tahirikosan.pokemonnft.utils.Utils.showToastShort
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import androidx.core.widget.NestedScrollView
+import androidx.recyclerview.widget.RecyclerView
+import android.widget.Toast
+
+
+
+
 
 @AndroidEntryPoint
 class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuBinding::inflate) {
 
     private lateinit var nftPokemons: List<NFTPokemon>
     private var selectedPokemon: PokemonModel? = null
-    private var pokemonAdapter: PokemonAdapter? = null
+    private lateinit var pokemonAdapter: PokemonAdapter
     private var nftPokemonAdapter: NFTPokemonAdapter? = null
     private val viewModel: GameMenuViewModel by viewModels()
+
+    private var pokemonOffset = 0
+    private lateinit var userId: String
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleClicks()
+        setNormalPokemonsAdapter()
+        listenNestedScrollView()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -102,7 +114,8 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
                 is Resource.Success -> {
                     Timber.d("Userid: " + it.value.toString())
-                    viewModel.getOwnerPokemonsByOffset(it.value!!.uid, 0)
+                    userId = it.value!!.uid
+                    viewModel.getOwnerPokemonsByOffset(it.value!!.uid, pokemonOffset)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -117,8 +130,10 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
                 is Resource.Success -> {
                     // Set warning message visibility
-                    binding.tvNftPokemonsNotFound.visible(it.value.pokemons.isEmpty())
-                    setNormalPokemonsAdapter(it.value.pokemons)
+                    binding.tvPokemonsNotFound.visible(it.value.pokemons.isEmpty())
+                    // Update offset
+                    pokemonOffset = it.value.offset
+                    pokemonAdapter.addNewPokemons(it.value.pokemons)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -130,20 +145,32 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
     private fun setNFTPokemonAdapter() {
         nftPokemonAdapter = NFTPokemonAdapter(nftPokemons) { nftPokemon ->
             // Remove selection from normal pokemon adapter.
-            pokemonAdapter?.removeSelection()
+            pokemonAdapter.removeSelection()
             selectedPokemon = nftPokemon.toPokemonModel()
             binding.ivFight.enable(true)
         }
         binding.recyclerViewNftPokemons.adapter = nftPokemonAdapter
     }
 
-    private fun setNormalPokemonsAdapter(pokemonModels: List<PokemonModel>) {
-        pokemonAdapter = PokemonAdapter(pokemonModels) {
+    private fun setNormalPokemonsAdapter() {
+        pokemonAdapter = PokemonAdapter(arrayListOf()) {
             // Remove nft pokemon selection.
             nftPokemonAdapter?.removeSelection()
             selectedPokemon = it
             binding.ivFight.enable(true)
         }
         binding.recyclerViewPokemons.adapter = pokemonAdapter
+    }
+
+    // Listen if user is at the end of nested scroll view to load new pokemons.
+    private fun listenNestedScrollView(){
+        binding.recyclerViewPokemons.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                if (!recyclerView.canScrollHorizontally(1)) {
+                    viewModel.getOwnerPokemonsByOffset(userId, pokemonOffset)
+                }
+            }
+        })
     }
 }

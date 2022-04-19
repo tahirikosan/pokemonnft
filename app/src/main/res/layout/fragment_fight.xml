@@ -13,18 +13,37 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ProgressBar
-        android:id="@+id/progress_enemy_health"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+    <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="20dp"
-        android:progress="100"
-        android:max="100"
-        android:progressTint="@color/red"
-        android:layout_marginTop="4dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/enemyPokemonView"
         app:layout_constraintStart_toStartOf="@id/enemyPokemonView"
-        app:layout_constraintTop_toBottomOf="@id/enemyPokemonView"
-        app:layout_constraintEnd_toEndOf="@id/enemyPokemonView"/>
+        app:layout_constraintTop_toBottomOf="@id/enemyPokemonView">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_enemy_health"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progress="100"
+            android:progressTint="@color/red"
+            app:indicatorColor="@color/red"
+            app:trackColor="@color/white"
+            app:trackCornerRadius="12dp"
+            app:trackThickness="20dp" />
+
+        <TextView
+            android:id="@+id/tv_enemy_health"
+            style="@style/AttributeTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="90"
+            android:textColor="@color/primaryColor" />
+
+    </RelativeLayout>
+
 
     <include
         android:id="@+id/myPokemonView"
@@ -34,28 +53,47 @@
         android:layout_marginBottom="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-    <ProgressBar
-        android:id="@+id/progress_my_health"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+
+    <RelativeLayout
         android:layout_width="0dp"
-        android:layout_height="20dp"
-        android:progress="100"
-        android:max="100"
-        android:progressTint="@color/green"
-        android:layout_marginTop="4dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/myPokemonView"
         app:layout_constraintStart_toStartOf="@id/myPokemonView"
-        app:layout_constraintTop_toBottomOf="@id/myPokemonView"
-        app:layout_constraintEnd_toEndOf="@id/myPokemonView"/>
+        app:layout_constraintTop_toBottomOf="@id/myPokemonView">
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progress_my_health"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:max="100"
+            android:progress="78"
+            android:progressTint="@color/red"
+            app:indicatorColor="@color/green"
+            app:trackColor="@color/white"
+            app:trackCornerRadius="12dp"
+            app:trackThickness="20dp" />
+
+        <TextView
+            android:id="@+id/tv_my_health"
+            style="@style/AttributeTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="90"
+            android:textColor="@color/primaryColor" />
+
+    </RelativeLayout>
 
     <Button
         android:id="@+id/attackBtn"
+        style="@style/DefaultButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Attack"
-        android:enabled="false"
         android:alpha="0.5"
-        style="@style/DefaultButtonStyle"
+        android:enabled="false"
+        android:text="Attack"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
