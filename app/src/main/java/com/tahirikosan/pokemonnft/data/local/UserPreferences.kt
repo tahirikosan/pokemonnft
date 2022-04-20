@@ -49,12 +49,18 @@ class UserPreferences @Inject constructor(@ApplicationContext context: Context) 
         get() = sharedPreferences.getString(REFRESH_TOKEN, null)
 
 
-    fun getMnemonic(): Mnemonic {
+    fun getMnemonic(): Mnemonic? {
         val str = sharedPreferences.getString(MNEMONIC, null)
-        return Gson().fromJson(
-            str,
-            Mnemonic::class.java
-        )
+        return try {
+            Gson().fromJson(
+                str,
+                Mnemonic::class.java
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+
     }
 
     fun saveMnemonic(mnemonic: Mnemonic) {

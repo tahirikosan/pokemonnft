@@ -63,7 +63,7 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(FragmentAuthBinding::infl
                 }
                 is Resource.Success -> {
                     it.value?.let {
-                        routeToWalletConnectionPage()
+                        findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToGameMenuFragment())
                     }
                 }
                 is Resource.Failure -> {
@@ -77,19 +77,12 @@ class AuthFragment : BaseFragment<FragmentAuthBinding>(FragmentAuthBinding::infl
                 }
                 is Resource.Success -> {
                     it.value?.let {
-                        routeToWalletConnectionPage()
+                        findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToGameMenuFragment())
                     }
                 }
                 is Resource.Failure -> handleApiError(it)
             }
         })
-    }
-
-    private fun routeToWalletConnectionPage() {
-        if (userPreferences.isPrivateKeyExist())
-            findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToGameMenuFragment())
-        else
-            findNavController().navigate(AuthFragmentDirections.actionAuthFragmentToWalletConnectionFragment())
     }
 
     private fun validateInputs(email: String, password: String): Boolean {

@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
 import com.tahirikosan.pokemonnft.databinding.FragmentRegisterBinding
+import com.tahirikosan.pokemonnft.utils.Utils.showToastShort
 import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collect
@@ -30,7 +31,11 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 val email = etEmail.text.toString()
                 val password = etPassword.text.toString()
                 val confirmPass = etPasswordConfirm.text.toString()
-                viewModel.signUpUser(email, password)
+                if (password == confirmPass) {
+                    viewModel.signUpUser(email, password)
+                } else {
+                    showToastShort(requireContext(), "Passwords should match!")
+                }
             }
         }
     }
@@ -60,7 +65,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 is Resource.Success -> {
                     // If user successfully added to firestore route to wallet page.
                     if (it.value) {
-                        findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToWalletConnectionFragment())
+                        findNavController().navigate(RegisterFragmentDirections.actionRegisterFragmentToAuthFragment())
                     }
                 }
                 is Resource.Failure -> {

@@ -29,7 +29,9 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
 
     private fun setViews() {
         with(binding) {
-            tvPublicKey.text = userPreferences.publicKey
+            userPreferences.publicKey?.let {
+                tvPublicKey.text = it
+            }
         }
     }
 
@@ -81,7 +83,10 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding>(FragmentProfileBind
                 R.drawable.ic_baseline_lock_open_24
             )
             // Corrupt mnemonic view
-            binding.tvMnemonic.text = "Phrase: ${userPreferences.getMnemonic().phrase} \nPath: ${userPreferences.getMnemonic().path} \nLocale: ${userPreferences.getMnemonic().locale}"
+            userPreferences.getMnemonic()?.let {
+                binding.tvMnemonic.text =
+                    "Phrase: ${it.phrase} \n\nPath: ${it.path} \n\nLocale: ${it.locale}"
+            }
         }
         isMnemonicVisible = !isMnemonicVisible
     }

@@ -86,7 +86,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="8dp"
-            android:text="asfasdfasdfasdfasdg"
+            android:text="Your public key will be shown here."
             android:textIsSelectable="true"
             android:textSize="16sp" />
 
@@ -124,7 +124,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginHorizontal="12dp"
             android:layout_marginTop="8dp"
-            android:text="asfasdfasdfasdfasdg"
+            android:text="Your mnemonic will be shown here."
             android:textIsSelectable="true"
             android:textSize="16sp" />
 
@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="12dp"
-            android:text="Connect to another wallet" />
+            android:text="Connect a wallet" />
 
     </LinearLayout>
 

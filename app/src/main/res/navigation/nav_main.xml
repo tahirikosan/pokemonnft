@@ -15,9 +15,6 @@
             android:id="@+id/action_authFragment_to_resetPasswordFragment"
             app:destination="@id/resetPasswordFragment" />
         <action
-            android:id="@+id/action_authFragment_to_walletConnectionFragment"
-            app:destination="@id/walletConnectionFragment" />
-        <action
             android:id="@+id/action_authFragment_to_gameMenuFragment"
             app:destination="@id/gameMenuFragment" />
     </fragment>
@@ -54,9 +51,6 @@
         <action
             android:id="@+id/action_registerFragment_to_authFragment"
             app:destination="@id/authFragment" />
-        <action
-            android:id="@+id/action_registerFragment_to_walletConnectionFragment"
-            app:destination="@id/walletConnectionFragment" />
     </fragment>
     <fragment
         android:id="@+id/resetPasswordFragment"
@@ -69,7 +63,11 @@
     <fragment
         android:id="@+id/mintingFragment"
         android:name="com.tahirikosan.pokemonnft.ui.mint.MintingFragment"
-        android:label="MintingFragment" />
+        android:label="MintingFragment" >
+        <action
+            android:id="@+id/action_mintingFragment_to_walletConnectionFragment"
+            app:destination="@id/walletConnectionFragment" />
+    </fragment>
     <fragment
         android:id="@+id/fightFragment"
         android:name="com.tahirikosan.pokemonnft.ui.fight.FightFragment"

@@ -22,6 +22,7 @@ import timber.log.Timber
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.RecyclerView
 import android.widget.Toast
+import com.tahirikosan.pokemonnft.ui.mint.MintingFragmentDirections
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
 
 
@@ -63,7 +64,11 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
     private fun handleClicks() {
         with(binding) {
             ivGoToMinting.setOnClickListener {
-                findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
+                if (isWalletConnected()) {
+                    findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
+                } else {
+                    findNavController().navigate(MintingFragmentDirections.actionMintingFragmentToWalletConnectionFragment())
+                }
             }
 
             ivGoToShopping.setOnClickListener {
@@ -165,7 +170,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
     }
 
     // Listen if user is at the end of nested scroll view to load new pokemons.
-    private fun listenNestedScrollView(){
+    private fun listenNestedScrollView() {
         binding.recyclerViewPokemons.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -174,5 +179,10 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 }
             }
         })
+    }
+
+
+    private fun isWalletConnected(): Boolean {
+        return userPreferences.publicKey != null
     }
 }
