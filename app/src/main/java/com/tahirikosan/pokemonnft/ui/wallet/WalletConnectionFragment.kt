@@ -8,13 +8,16 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.tahirikosan.pokemonnft.base.BaseFragment
 import com.tahirikosan.pokemonnft.data.remote.Resource
+import com.tahirikosan.pokemonnft.data.response.wallet.Mnemonic
 import com.tahirikosan.pokemonnft.databinding.FragmentWalletConnectionBinding
 import com.tahirikosan.pokemonnft.utils.Anonymous
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
+import com.tahirikosan.pokemonnft.utils.Utils.visible
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.security.KeyStore
+import java.security.PrivateKey
 import javax.crypto.Cipher
 import javax.crypto.KeyGenerator
 import javax.crypto.SecretKey
@@ -25,11 +28,15 @@ class WalletConnectionFragment :
     BaseFragment<FragmentWalletConnectionBinding>(FragmentWalletConnectionBinding::inflate) {
 
     private val viewModel by viewModels<WalletConnectionViewModel>()
+    private var publicKey: String? = null
+    private var privateKey: String? = null
+    private var mnemonic: Mnemonic? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         handleClicks()
         observe()
+        toggleConnectionViews()
     }
 
     private fun handleClicks() {
@@ -43,6 +50,9 @@ class WalletConnectionFragment :
                 btnConnectToWallet.enable(false)
                 viewModel.connectWallet(etMnemonic.text.trim().toString())
             }
+            btnDisconnectWallet.setOnClickListener {
+                viewModel.removePublicKeyToFirestore(userPreferences.publicKey!!)
+            }
 
         }
     }
@@ -50,14 +60,12 @@ class WalletConnectionFragment :
     private fun observe() {
         // Observe wallet.
         viewModel.walletCreateResponse.observe(this, {
-            //binding.viewLoading.visible(it is Resource.Loading)
+            binding.viewLoading.visible(it is Resource.Loading)
             when (it) {
                 is Resource.Loading -> {
                 }
                 is Resource.Success -> {
-                    Timber.d(it.value.toString())
                     binding.etMnemonic.setText(it.value.mnemonic.phrase)
-                    //routeToGameMenuPage()
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -67,16 +75,16 @@ class WalletConnectionFragment :
         })
 
         viewModel.walletConnectResponse.observe(this, {
-            //binding.viewLoading.visible(it is Resource.Loading)
+            binding.viewLoading.visible(it is Resource.Loading)
             when (it) {
                 is Resource.Loading -> {
                 }
                 is Resource.Success -> {
-                    Timber.d(it.value.toString())
-                    userPreferences.savePrivateKey(it.value.privateKey)
-                    userPreferences.savePublicKey(it.value.publicKey)
-                    userPreferences.saveMnemonic(it.value.mnemonic)
-                    routeToGameMenuPage()
+                    privateKey = it.value.privateKey
+                    publicKey = it.value.publicKey
+                    mnemonic = it.value.mnemonic
+
+                    viewModel.isWalletOccupied(publicKey!!)
                 }
                 is Resource.Failure -> {
                     Utils.showToastShort(requireContext(), it.errorBody.toString())
@@ -84,6 +92,72 @@ class WalletConnectionFragment :
             }
             binding.btnConnectToWallet.enable(true)
         })
+
+        viewModel.walletOccupiedBool.observe(this, {
+            binding.viewLoading.visible(it is Resource.Loading)
+            when (it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    // If wallet not occupied.
+                    if (!it.value) {
+                        viewModel.addPublicKeyToFirestore(publicKey!!)
+                    } else {
+                        Utils.showToastShort(requireContext(), "The wallet is already in use.")
+                    }
+                }
+                is Resource.Failure -> {
+                    Utils.showToastShort(requireContext(), it.errorBody.toString())
+                }
+            }
+            binding.btnConnectToWallet.enable(true)
+        })
+
+        viewModel.walletAddToOccupiedListBool.observe(this, {
+            binding.viewLoading.visible(it is Resource.Loading)
+            when (it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    // If wallet added to occupied list successfully.
+                    if (it.value) {
+                        userPreferences.savePrivateKey(privateKey!!)
+                        userPreferences.savePublicKey(publicKey!!)
+                        userPreferences.saveMnemonic(mnemonic!!)
+                        routeToGameMenuPage()
+                    }
+                }
+                is Resource.Failure -> {
+                    Utils.showToastShort(requireContext(), it.errorBody.toString())
+                }
+            }
+            binding.btnConnectToWallet.enable(true)
+        })
+
+        viewModel.walletRemoveToOccupiedListBool.observe(this, {
+            binding.viewLoading.visible(it is Resource.Loading)
+            when (it) {
+                is Resource.Loading -> {
+                }
+                is Resource.Success -> {
+                    // If wallet removed from occupied list successfully.
+                    if (it.value) {
+                        // Then clear shared prefs.
+                        userPreferences.clear()
+                        toggleConnectionViews()
+                    }
+                }
+                is Resource.Failure -> {
+                    Utils.showToastShort(requireContext(), it.errorBody.toString())
+                }
+            }
+            binding.btnConnectToWallet.enable(true)
+        })
+    }
+
+    private fun toggleConnectionViews() {
+        binding.layoutConnection.visible(userPreferences.publicKey == null)
+        binding.btnDisconnectWallet.visible(userPreferences.publicKey != null)
     }
 
     private fun routeToGameMenuPage() {

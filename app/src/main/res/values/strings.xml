@@ -11,6 +11,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="reset">Reset</string>
     <string name="connect_wallet">Connect wallet</string>
+    <string name="disconnect_wallet">Disconnect wallet</string>
+    <string name="manage_wallet">Manage wallet</string>
     <string name="create_wallet">Create wallet</string>
     <string name="public_key">Public Key</string>
     <string name="mnemonic">Mnemonic</string>

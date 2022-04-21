@@ -1,6 +1,5 @@
 package com.tahirikosan.pokemonnft.data.remote
 
-import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,6 +8,10 @@ import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon
 import com.tahirikosan.pokemonnft.data.response.ownerpokemons.NFTPokemon.Companion.toPokemon
 import com.tahirikosan.pokemonnft.data.response.user.User
 import com.tahirikosan.pokemonnft.data.response.user.User.Companion.toUser
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_WALLET
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.OCCUPIED_WALLETS_DOC_IC
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldOccupiedWallets
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
 import javax.inject.Inject
@@ -43,7 +46,6 @@ class FirestoreDatabaseImpl @Inject constructor(
                     it.toPokemon()
                 }.first()
         } catch (e: Exception) {
-            Log.w("main", "Error getting documents.", e)
             e.printStackTrace()
             throw  e
         }
@@ -125,6 +127,48 @@ class FirestoreDatabaseImpl @Inject constructor(
                 .await()
             true
         } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
+    override suspend fun isWalletOccupied(publicKeyStr: String): Boolean {
+        return try {
+            val result = firestore.collection(COLLECTION_WALLET)
+                .whereArrayContains(fieldOccupiedWallets, publicKeyStr)
+                .limit(1)
+                .get()
+                .await()
+
+            !result.isEmpty
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
+    override suspend fun addPublicKeyToFirestore(publicKeyStr: String): Boolean {
+        return try {
+            firestore.collection(COLLECTION_WALLET)
+                .document(OCCUPIED_WALLETS_DOC_IC)
+                .update(fieldOccupiedWallets, FieldValue.arrayUnion(publicKeyStr))
+                .await()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
+            throw e
+        }
+    }
+
+    override suspend fun removePublicKeyToFirestore(publicKeyStr: String): Boolean {
+        return try {
+            firestore.collection(COLLECTION_WALLET)
+                .document(OCCUPIED_WALLETS_DOC_IC)
+                .update(fieldOccupiedWallets, FieldValue.arrayRemove(publicKeyStr))
+                .await()
+            true
+        } catch (e: Exception) {
+            e.printStackTrace()
             throw e
         }
     }

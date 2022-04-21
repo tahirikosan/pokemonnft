@@ -29,7 +29,22 @@ class FirestoreRepository @Inject constructor(
     suspend fun getUserPokemonIds(): Resource<List<Int>> = safeApiCall {
         firestoreDatabase.getUserPokemonIds()
     }
+
     suspend fun getUser(): Resource<User> = safeApiCall {
         firestoreDatabase.getUser()
     }
+
+    suspend fun isWalletOccupied(publicKeyStr: String): Resource<Boolean> = safeApiCall {
+        firestoreDatabase.isWalletOccupied(publicKeyStr)
+    }
+
+    suspend fun addPublicKeyToFirestore(publicKeyStr: String): Resource<Boolean> =
+        safeApiCall {
+            firestoreDatabase.addPublicKeyToFirestore(publicKeyStr)
+        }
+
+    suspend fun removePublicKeyToFirestore(publicKeyStr: String): Resource<Boolean> =
+        safeApiCall {
+            firestoreDatabase.removePublicKeyToFirestore(publicKeyStr)
+        }
 }

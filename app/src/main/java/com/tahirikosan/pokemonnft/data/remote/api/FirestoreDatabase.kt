@@ -11,4 +11,9 @@ interface FirestoreDatabase {
     suspend fun getPokemonByHash(hash: String): NFTPokemon
     suspend fun getUserPokemonIds(): List<Int>
     suspend fun getUser(): User
+    // Check if target wallet public key exist in occupied wallets in firestore.
+    suspend fun isWalletOccupied(publicKeyStr: String): Boolean
+    // adds public key to firestore occupied wallets array.
+    suspend fun addPublicKeyToFirestore(publicKeyStr: String): Boolean
+    suspend fun removePublicKeyToFirestore(publicKeyStr: String): Boolean
 }

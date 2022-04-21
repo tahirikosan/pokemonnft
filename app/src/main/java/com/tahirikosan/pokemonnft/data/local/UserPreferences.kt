@@ -88,7 +88,9 @@ class UserPreferences @Inject constructor(@ApplicationContext context: Context) 
     fun isPrivateKeyExist(): Boolean = sharedPreferences.contains(PRIVATE_KEY)
 
 
+    // Clear public key, private key and mnemonic.
     fun clear() {
+        editor.clear().commit()
     }
 
     companion object {

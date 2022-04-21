@@ -15,21 +15,13 @@ import com.tahirikosan.pokemonnft.data.response.fight.Room
 import com.tahirikosan.pokemonnft.enum.PokemonStatEnum
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_USERS
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.ap
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.dp
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_coin
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_health
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_initial_turn
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_pvp
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_round
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_score
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldCoin
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldHealth
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldPlayers
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldPvp
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldRound
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldScore
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_turn
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.hp
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.imageUrl
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.playersPokemons
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.pokemonName
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.sp
 import com.tahirikosan.pokemonnft.utils.Utils
 import com.tahirikosan.pokemonnft.utils.Utils.enable
 import com.tahirikosan.pokemonnft.utils.Utils.onBackPressed
@@ -186,7 +178,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
             }
             // Then update the enemyHp.
             roomsRef.document(roomId)
-                .update("$field_health.${enemyId}", enemyHp).addOnSuccessListener {
+                .update("$fieldHealth.${enemyId}", enemyHp).addOnSuccessListener {
                     // Set enemy hp view.
                     setEnemyHealth(enemyHp)
                     if (enemyHp == 0) {
@@ -312,9 +304,9 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         // Then update the enemyHp.
         roomsRef.document(roomId)
             .update(
-                "$field_score.${userId}",
+                "$fieldScore.${userId}",
                 FieldValue.increment(1),
-                "$field_round",
+                "$fieldRound",
                 FieldValue.increment(1)
             ).addOnSuccessListener {
                 // Reset room.
@@ -343,7 +335,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         deleteRoom()
         usersRef.document(userId)
             .update(
-                field_coin, FieldValue.increment(50), field_pvp, FieldValue.increment(10)
+                fieldCoin, FieldValue.increment(50), fieldPvp, FieldValue.increment(10)
             ).addOnSuccessListener {
                 routeToGameResults(isWon = true)
             }
@@ -356,7 +348,7 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         deleteRoom()
         usersRef.document(userId)
             .update(
-                field_pvp, FieldValue.increment(-10)
+                fieldPvp, FieldValue.increment(-10)
             ).addOnSuccessListener {
                 routeToGameResults(isWon = false)
             }
@@ -366,10 +358,10 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
     private fun youLeftTheRoom() {
         Log.d("LEFT ROOM:", userId)
         roomsRef.document(roomId)
-            .update(field_players, FieldValue.arrayRemove(userId))
+            .update(fieldPlayers, FieldValue.arrayRemove(userId))
         usersRef.document(userId)
             .update(
-                field_pvp, FieldValue.increment(-50)
+                fieldPvp, FieldValue.increment(-50)
             )
     }
 
@@ -391,9 +383,9 @@ class FightFragment : BaseFragment<FragmentFightBinding>(FragmentFightBinding::i
         // First update user and enemy health on firestore.
         roomsRef.document(roomId)
             .update(
-                "$field_health.$enemyId",
+                "$fieldHealth.$enemyId",
                 enemyFullHp,
-                "$field_health.$userId",
+                "$fieldHealth.$userId",
                 myFullHp
             )
             .addOnSuccessListener {

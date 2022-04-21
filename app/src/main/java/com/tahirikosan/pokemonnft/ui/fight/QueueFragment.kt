@@ -17,7 +17,7 @@ import com.tahirikosan.pokemonnft.utils.FirebaseUtils
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_QUEUE
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.COLLECTION_ROOMS
 import com.tahirikosan.pokemonnft.utils.FirebaseUtils.QUEUE_DOC_IC
-import com.tahirikosan.pokemonnft.utils.FirebaseUtils.field_players
+import com.tahirikosan.pokemonnft.utils.FirebaseUtils.fieldPlayers
 import com.tahirikosan.pokemonnft.utils.Utils
 
 class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::inflate) {
@@ -79,7 +79,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
             FirebaseUtils.imageUrl to selectedPokemon.image,
         )
         queueRef.document(QUEUE_DOC_IC)
-            .update("${field_players}.${playerId}", playerMap).addOnSuccessListener {
+            .update("${fieldPlayers}.${playerId}", playerMap).addOnSuccessListener {
                 Utils.showToastShort(requireContext(), "added to queue")
             }.addOnFailureListener {
                 it.printStackTrace()
@@ -89,7 +89,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
     private fun removeUserFromQueue(playerId: String) {
         queueRef.document(QUEUE_DOC_IC)
-            .update("${field_players}.${playerId}", FieldValue.delete())
+            .update("${fieldPlayers}.${playerId}", FieldValue.delete())
             .addOnSuccessListener {
                 //binding.joinButton.visible(true)
             }
@@ -113,7 +113,7 @@ class QueueFragment : BaseFragment<FragmentQueueBinding>(FragmentQueueBinding::i
 
     private fun listenChanges() {
         // Listen game room and join it.
-        roomListener = roomsRef.whereArrayContains(field_players, myPlayerId)
+        roomListener = roomsRef.whereArrayContains(fieldPlayers, myPlayerId)
             .addSnapshotListener { snapshots, e ->
                 if (e != null) {
                     Log.w("TAG", "Listen failed.", e)
