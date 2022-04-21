@@ -67,7 +67,7 @@ class GameMenuFragment : BaseFragment<FragmentGameMenuBinding>(FragmentGameMenuB
                 if (isWalletConnected()) {
                     findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToMintingFragment())
                 } else {
-                    findNavController().navigate(MintingFragmentDirections.actionMintingFragmentToWalletConnectionFragment())
+                    findNavController().navigate(GameMenuFragmentDirections.actionGameMenuFragmentToWalletConnectionFragment())
                 }
             }
 
